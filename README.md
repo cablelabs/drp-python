@@ -1,6 +1,6 @@
 # drb-python
 
-Python library for Digital Rebar APIs. https://provision.readthedocs.io/en/tip/doc/api.html
+Python library for [Digital Rebar APIs](https://provision.readthedocs.io/en/tip/doc/api.html).
 
 ## Contributing
 
