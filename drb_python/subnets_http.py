@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from api.api_http import ApiHttp
-from http.http_exceptions import AuthorizationError, ConnectionError
+from api_http import ApiHttp
+from http_exceptions import AuthorizationError, ConnectionError
 
 
 class SubnetsHttp(ApiHttp):

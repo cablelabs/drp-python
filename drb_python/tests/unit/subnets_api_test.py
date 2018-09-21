@@ -14,9 +14,9 @@
 
 import unittest
 
-from subnets_api.subnets_http import SubnetsHttp
-from api.api_http import ConnectionStatus
-from http.http_exceptions import AuthorizationError, ConnectionError
+from drb_python.subnets_http import SubnetsHttp
+from drb_python.api_http import ConnectionStatus
+from drb_python.http_exceptions import AuthorizationError, ConnectionError
 
 
 class SubnetHttps(unittest.TestCase):
@@ -81,7 +81,7 @@ class SubnetHttps(unittest.TestCase):
             self.assertEqual(result['Name'], 'ens5')
             self.assertEqual(result['Subnet'], '10.1.1.10/24')
 
-            result = r.execute_subnet_action('ens5', 'test')
+            result = r.execute_subnet_action('ens5', 'tests')
 
             result = r.get_subnet_all_actions('ens5')
 
