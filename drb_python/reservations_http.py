@@ -17,16 +17,16 @@ from http_exceptions import AuthorizationError, ConnectionError
 from drb_exceptions import  ActionError
 
 
-class SubnetsHttp(ApiHttp):
+class ReservationsHttp(ApiHttp):
     """
-     All HTTP based API Calls related to Subnets
+     All HTTP based API Calls related to Reservations
     """
     def __init__(self, host, login, verifyCert=False):
         ApiHttp.__init__(self, host, login, verifyCert)
 
-    def get_all_subnets(self):
+    def get_all_reservations(self):
         try:
-            result = self.httpProxy.get('subnets')
+            result = self.httpProxy.get('reservations')
             return result
         except AuthorizationError as error:
             print error
@@ -35,9 +35,9 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def get_subnet(self, subnet_name):
+    def get_reservation(self, address):
         try:
-            result = self.httpProxy.get('subnets', subnet_name)
+            result = self.httpProxy.get('reservations', address)
             return result
         except AuthorizationError as error:
             print error
@@ -46,9 +46,9 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def create_subnet(self, subnet):
+    def create_reservation(self, reservation):
         try:
-            result = self.httpProxy.post('subnets', subnet)
+            result = self.httpProxy.post('reservations', reservation)
             return result
         except AuthorizationError as error:
             print error
@@ -57,9 +57,9 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def update_subnet(self, subnet, subnet_name):
+    def update_reservation(self, reservation, address):
         try:
-            result = self.httpProxy.put('subnets', subnet, subnet_name)
+            result = self.httpProxy.put('reservations', reservation, address)
             return result
         except AuthorizationError as error:
             print error
@@ -68,9 +68,9 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def delete_subnet(self, subnet_name):
+    def delete_reservation(self, address):
         try:
-            result = self.httpProxy.delete('subnets', subnet_name)
+            result = self.httpProxy.delete('reservations', address)
             return result
         except AuthorizationError as error:
             print error
@@ -79,9 +79,9 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def get_subnet_all_actions(self, subnet_name):
+    def get_reservation_all_actions(self, address):
         try:
-            result = self.httpProxy.get('subnets/' + subnet_name + '/actions')
+            result = self.httpProxy.get('reservations/' + address + '/actions')
             return result
         except AuthorizationError as error:
             print error
@@ -90,9 +90,9 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def get_subnet_action(self, subnet_name, cmd):
+    def get_reservation_action(self, address, cmd):
         try:
-            result = self.httpProxy.get('subnets/' + subnet_name + '/actions', cmd)
+            result = self.httpProxy.get('reservations/' + address + '/actions', cmd)
             return result
         except AuthorizationError as error:
             print error
@@ -101,11 +101,11 @@ class SubnetsHttp(ApiHttp):
             print error
             raise error
 
-    def execute_subnet_action(self, subnet_name, cmd):
+    def execute_reservation_action(self, address, cmd):
         try:
-            result = self.httpProxy.post('subnets/' + subnet_name + '/actions/' + cmd, {})
+            result = self.httpProxy.post('reservations/' + address + '/actions/' + cmd, {})
             if result == 400:
-                raise ActionError(cmd, 'Action is not available on subnet ' + subnet_name)
+                raise ActionError(cmd, 'Action is not available on reservation ' + address)
             else:
                 return result
         except AuthorizationError as error:

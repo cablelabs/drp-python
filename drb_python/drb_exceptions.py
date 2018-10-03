@@ -12,34 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Error(Exception):
+class DrbError(Exception):
     """Base class for drb-exceptions in this module."""
-    def __init__(self, expression, message, status, body):
+    def __init__(self, expression, message):
         self.expression = expression
         self.message = message
-        self.status = status
-        self.body = body
 
     def __str__(self):
-        return 'Status: ' + str(self.status) + ' ' + self.message + '\n' + self.body
+        return 'Error on ' + self.expression + ':  ' + self.message
 
 
-class AuthorizationError(Error):
+class ActionError(DrbError):
     """Exception raised for authorization errors.
     Attributes:
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
-    def __init__(self, expression, message, status, body):
-        Error.__init__(self, expression, message, status, body)
-
-
-class ConnectionError(Error):
-    """Exception raised for connection errors.
-    Attributes:
-        expression -- url in which the error occurred
-        message -- explanation of the error
-    """
-    def __init__(self, expression, message, status, body):
-        Error.__init__(self, expression, message, status, body)
-
+    def __init__(self, action, message):
+        DrbError.__init__(self, action, message)
