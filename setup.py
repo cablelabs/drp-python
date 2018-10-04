@@ -20,7 +20,7 @@ setup(
     author='Dan Schrimpsher',
     author_email='d.schrimpsher@cablelabs.com',
     description='Python Module to Support Digital Rebar API',
-    long_description='Really, the funniest around.',
+    long_description='Python bindings to Digital Rebar API.',
     classifiers=[
         'Development Status :: 1 - Alpha',
         'License :: OSI Approved :: Apache Software License 2.0 (Apache-2.0)'
@@ -34,7 +34,8 @@ setup(
         'enum',
         'idna',
         'requests',
-        'urllib3'
+        'urllib3',
+        'uuid'
     ],
     test_suite='nose.collector',
     tests_require=['nose'],

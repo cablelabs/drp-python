@@ -14,6 +14,7 @@
 
 from http_proxy import HttpProxy
 from enum import Enum
+from http_exceptions import ConnectionError, AuthorizationError
 
 
 class ConnectionStatus(Enum):
@@ -27,21 +28,26 @@ class ApiHttp():
     Base for All HTTP based API Calls
     """
 
-    def __init__(self, host, login, verifyCert=False):
-        self.host = host
-        self.login = login
-        self.verifyCert = verifyCert
-        self.httpProxy = HttpProxy(self.host, self.login['username'], self.login['password'], self.verifyCert)
+    def __init__(self, session):
+        self.session = session
 
-    def connectionStatus(self):
-        if self.httpProxy.is_authorized():
+    def connection_status(self):
+        if self.session.is_authorized():
             return ConnectionStatus.OPEN
         else:
             return ConnectionStatus.CLOSED
 
     def open(self):
-        self.httpProxy.authorize()
-        return self.connectionStatus()
+        try:
+            if not self.session.is_authorized():
+                self.session.authorize()
+            return ConnectionStatus.OPEN
+        except ConnectionError as error:
+            raise error
+        except AuthorizationError as error:
+            raise error
+
+
 
 
 
