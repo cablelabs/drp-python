@@ -30,3 +30,12 @@ class ActionError(DrbError):
     """
     def __init__(self, action, message):
         DrbError.__init__(self, action, message)
+
+class AlreadyExists(DrbError):
+    """Exception raised for authorization errors.
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, key, message):
+        DrbError.__init__(self, key, message)

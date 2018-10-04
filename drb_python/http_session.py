@@ -16,10 +16,11 @@
 import requests
 import urllib3
 from http_exceptions import AuthorizationError, ConnectionError
+from drb_exceptions import AlreadyExists
 urllib3.disable_warnings()
 
 
-class HttpProxy:
+class HttpSession:
     def __init__(self, url, username, password, verify_cert=False):
         self.username = username
         self.password = password
@@ -66,13 +67,14 @@ class HttpProxy:
             self.authorize()
         headers = {'Authorization': 'Bearer ' + self.token}
         actual_resource = resource
+        print body
         r = requests.post(self.url + '/api/v3/' + actual_resource, headers=headers, json=body, verify=False)
         if r.status_code == 201:
             return r.json()
         else:
             print 'Error on Post ' + str(r.status_code)
-            print r.json()
-            return r.status_code
+            temp = r.json()
+            raise AlreadyExists(body['Name'], str(temp['Messages'][0]))
 
     def delete(self, resource, key):
         if not self.is_authorized():

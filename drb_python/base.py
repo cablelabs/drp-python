@@ -21,7 +21,7 @@ class Base(abc.ABCMeta):
      Client Base class for interacting with DRP
     """
 
-    def __init__(self, session, **config):
+    def __init__(self, session):
         # type: (object) -> object
         self.host = 'https://10.197.113.130:8092'
         self.login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}

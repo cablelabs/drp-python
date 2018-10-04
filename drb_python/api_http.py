@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from http_proxy import HttpProxy
 from enum import Enum
 from http_exceptions import ConnectionError, AuthorizationError
 

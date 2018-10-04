@@ -15,7 +15,7 @@
 from api_http import ApiHttp
 from http_exceptions import AuthorizationError, ConnectionError
 from drb_exceptions import ActionError
-from netaddr import IPAddress
+from netaddr import IPAddress, IPNetwork
 
 
 class SubnetsHttp(ApiHttp):
@@ -41,8 +41,9 @@ class SubnetsHttp(ApiHttp):
 
     def get_subnet(self, subnet_name):
         try:
-            result = self.session.get('subnets', subnet_name)
-            return result
+            self.drb_obj = self.session.get('subnets', subnet_name)
+            self.convert_to_client()
+            return self.client_obj
         except AuthorizationError as error:
             print error
             raise error
@@ -53,9 +54,10 @@ class SubnetsHttp(ApiHttp):
     def create_subnet(self, **subnet):
         try:
             self.client_obj = subnet
-            self.convertToDrb()
-            result = self.session.post('subnets', self.drb_obj)
-            return result
+            self.convert_to_drb()
+            self.drb_obj = self.session.post('subnets', self.drb_obj)
+            self.convert_to_client()
+            return self.client_obj
         except AuthorizationError as error:
             print error
             raise error
@@ -153,50 +155,112 @@ class SubnetsHttp(ApiHttp):
               }
         :return: 
         """
-        address = self.client_obj.get('address') + '/' + IPAddress(self.client_obj.get('netmask')).netmask_bits()
+        print self.client_obj
+        address = self.client_obj['address'] + '/' + str(IPAddress(self.client_obj['netmask']).netmask_bits())
         self.drb_obj = {
-            "ActiveEnd": self.client_obj.get('range').split(' ')[1],
-            "ActiveLeaseTime": self.client_obj.get('default_lease'),
-            "ActiveStart": self.client_obj.get('range').split(' ')[0],
-            "Description": self.client_obj.get('type'),
+            "ActiveEnd": self.client_obj['range'].split(' ')[1],
+            "ActiveLeaseTime": self.client_obj['default_lease'],
+            "ActiveStart": self.client_obj['range'].split(' ')[0],
+            "Description": self.client_obj['type'],
             "Enabled": True,
-            "Name": self.client_obj.get('name'),
-            "NextServer": "string",
+            "Name": self.client_obj['name'],
             "OnlyReservations": True,
             "Pickers": [
                 "hint"
             ],
             "Proxy": False,
-            "ReservedLeaseTime": self.client_obj.get('default_lease'),
-            "Strategy": "string",
+            "ReservedLeaseTime": self.client_obj['default_lease'],
             "Subnet": address,
             "Unmanaged": True,
             "Options": [
                 {
                     "Code": 6,
-                    "Value": self.client_obj.get('dns'),
+                    "Value": self.client_obj['dns'],
                     'Description': 'Domain Name Server'
                 },
                 {
                     "Code": 15,
-                    "Value": self.client_obj.get('dn'),
+                    "Value": self.client_obj['dn'],
                     'Description': 'Domain Name'
                 },
                 {
                     "Code": 1,
-                    "Value": self.client_obj.get('netmask'),
+                    "Value": self.client_obj['netmask'],
                     'Description': 'Network Mask'
                 },
                 {
                     "Code": 3,
-                    "Value": self.client_obj.get('router'),
+                    "Value": self.client_obj['router'],
                     'Description': 'Router'
                 },
                 {
                     "Code": 28,
-                    "Value": self.client_obj.get('broadcast_address'),
+                    "Value": self.client_obj['broadcast_address'],
                     'Description': 'Broadcast Address'
                 }
 
             ]
+        }
+
+    def convert_to_client(self):
+        """
+           "ActiveEnd": self.client_obj['range'].split(' ')[1],
+        "ActiveLeaseTime": self.client_obj['default_lease'],
+        "ActiveStart": self.client_obj['range'].split(' ')[0],
+        "Description": self.client_obj['type'],
+        "Enabled": True,
+        "Name": self.client_obj['name'],
+        "OnlyReservations": True,
+        "Pickers": [
+            "hint"
+        ],
+        "Proxy": False,
+        "ReservedLeaseTime": self.client_obj['default_lease'],
+        "Subnet": address,
+        "Unmanaged": True,
+        "Options": [
+            {
+                "Code": 6,
+                "Value": self.client_obj['dns'],
+                'Description': 'Domain Name Server'
+            },
+            {
+                "Code": 15,
+                "Value": self.client_obj['dn'],
+                'Description': 'Domain Name'
+            },
+            {
+                "Code": 1,
+                "Value": self.client_obj['netmask'],
+                'Description': 'Network Mask'
+            },
+            {
+                "Code": 3,
+                "Value": self.client_obj['router'],
+                'Description': 'Router'
+            },
+            {
+                "Code": 28,
+                "Value": self.client_obj['broadcast_address'],
+                'Description': 'Broadcast Address'
+            }
+        ]
+        """
+        ip = IPNetwork(str(self.drb_obj['Subnet']))
+        address = str(ip.ip)
+        netmask = str(ip.netmask)
+        broadcast = str(ip.broadcast)
+        self.client_obj = {
+            'address': address,
+            'broadcast_address': broadcast,
+            'default_lease': self.drb_obj['ActiveLeaseTime'],
+            'dn': self.drb_obj['Options'][1]['Value'],
+            'dns': self.drb_obj['Options'][0]['Value'],
+            'listen_iface': 'eno1',
+            'max_lease': self.drb_obj['ReservedLeaseTime'],
+            'name': self.drb_obj['Name'],
+            'netmask': netmask,
+            'range': self.drb_obj['ActiveStart'] + ' ' + self.drb_obj['ActiveEnd'],
+            'router': self.drb_obj['Options'][3]['Value'],
+            'type': self.drb_obj['Description']
         }

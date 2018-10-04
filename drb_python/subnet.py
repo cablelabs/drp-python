@@ -17,13 +17,13 @@ from subnets_http import SubnetsHttp
 from base import Base
 
 
-def createSubnet(session, **clientSubnet):
+def create_subnet(session, clientSubnet):
     subnet = Subnet(session, clientSubnet)
     subnet.create()
     return subnet
 
 
-class Subnet(Base):
+class Subnet():
     """
     Client Subnet Object
 
@@ -45,26 +45,38 @@ class Subnet(Base):
 
     """
     def __init__(self, session, **clientSubnet):
-        super(Subnet, self).__init__(session, clientSubnet)
-        self.address = clientSubnet.get('address')
-        self.broadcast_address = clientSubnet.get('broadcast_address')
-        self.default_lease = clientSubnet.get('default_lease')
-        self.dn = clientSubnet.get('dn')
-        self.dns =  clientSubnet.get('dns')
-        self.listen_iface = clientSubnet.get('listen_iface')
-        self.max_lease = clientSubnet.get('max_lease')
-        self.name = clientSubnet.get('name')
-        self.netmask = clientSubnet.get('netmask')
-        self.range = clientSubnet.get('range')
-        self.router = clientSubnet.get('router')
-        self.type = clientSubnet.get('type')
-        self.api = SubnetsHttp(self.session)
+        # self.address = clientSubnet.get('address')
+        # self.broadcast_address = clientSubnet.get('broadcast_address')
+        # self.default_lease = clientSubnet.get('default_lease')
+        # self.dn = clientSubnet.get('dn')
+        # self.dns =  clientSubnet.get('dns')
+        # self.listen_iface = clientSubnet.get('listen_iface')
+        # self.max_lease = clientSubnet.get('max_lease')
+        # self.name = clientSubnet.get('name')
+        # self.netmask = clientSubnet.get('netmask')
+        # self.range = clientSubnet.get('range')
+        # self.router = clientSubnet.get('router')
+        # self.type = clientSubnet.get('type')
+        self.client_obj = clientSubnet
+        self.api = SubnetsHttp(session)
 
     def create(self):
-        self.api.open()
-        self.api.create_subnet(self.address, self.broadcast_address, self.default_lease, self.dn,
-                                             self.dns, self.listen_iface, self.max_lease, self.name, self.netmask,
-                                             self.range, self.router, self.type)
+        try:
+            self.api.open()
+            self.client_obj = self.api.create_subnet(**self.client_obj)
+            return True
+        except ConnectionError as error:
+            print error
+            raise error
+        except AuthorizationError as error:
+            print error
+            raise error
+        # self.api.create_subnet(address=self.address, broadcast_address=self.broadcast_address, default_lease=self.default_lease,
+        #                        dn=self.dn, dns=self.dns, listen_iface=self.listen_iface, max_lease=self.max_lease,
+        #                        name=self.name, netmask=self.netmask,range=self.range, router=self.router, type=self.type)
+        # self.api.create_subnet({'address':self.address, 'broadcast_address':self.broadcast_address, 'default_lease':self.default_lease,
+        #                        'dn':self.dn, 'dns':self.dns, 'listen_iface':self.listen_iface, 'max_lease':self.max_lease,
+        #                        'name':self.name, 'netmask':self.netmask,'range':self.range, 'router':self.router, 'type':self.type})
 
     def get_all(self):
         '''
@@ -84,8 +96,8 @@ class Subnet(Base):
 
     def fetch(self):
         try:
-            self.object = self.api.get_subnet(self.object.name)
-            return self.object
+            self.client_obj = self.api.get_subnet(self.client_obj['name'])
+            return True
         except ConnectionError as error:
             print error
             raise error
@@ -95,8 +107,8 @@ class Subnet(Base):
 
     def update(self, **updated_object):
         try:
-            self.object = self.api.update_subnet(updated_object, self.object.name)
-            return self.object
+            self.client_obj = self.api.update_subnet(updated_object, self.client_obj['name'])
+            return True
         except ConnectionError as error:
             print error
             raise error
@@ -106,8 +118,8 @@ class Subnet(Base):
 
     def delete(self):
         try:
-            self.object = self.api.delete_subnet(self.object.name)
-            return self.object
+            print self.client_obj
+            self.api.delete_subnet(self.client_obj['name'])
         except ConnectionError as error:
             print error
             raise error
