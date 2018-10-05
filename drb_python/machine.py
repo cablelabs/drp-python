@@ -18,7 +18,7 @@ from machines_http import MachinesHttp
 from uuid import uuid1
 
 
-class Machine():
+class Machine:
     """
      Client Machine class for interacting with DRP
     """
