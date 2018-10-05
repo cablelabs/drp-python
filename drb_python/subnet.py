@@ -52,6 +52,7 @@ class Subnet():
 
     """
 
+
     def __init__(self, session, **clientSubnet):
         logger.debug('__init__')
         self.client_obj = clientSubnet
