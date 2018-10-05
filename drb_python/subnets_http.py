@@ -12,104 +12,122 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from api_http import ApiHttp
+from drb_python.api_http import ApiHttp
 from http_exceptions import AuthorizationError, ConnectionError
 from drb_exceptions import ActionError
 from netaddr import IPAddress, IPNetwork
+import logging
+logger = logging.getLogger('drb-python')
 
 
 class SubnetsHttp(ApiHttp):
     """
      All HTTP based API Calls related to Subnets
     """
-
     def __init__(self, session):
-        ApiHttp.__init__(self, session)
+        super(SubnetsHttp, self).__init__(session)
+        logger.debug('__init__')
         self.drb_obj = None
         self.client_obj = None
 
     def get_all_subnets(self):
+        logger.debug('get_all_subnets')
         try:
             result = self.session.get('subnets')
+            logger.info('Fetched all subnets')
             return result
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def get_subnet(self, subnet_name):
+        logger.debug('get_subnet')
         try:
             self.drb_obj = self.session.get('subnets', subnet_name)
             self.convert_to_client()
+            logger.info('Got cached ' + subnet_name)
             return self.client_obj
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def create_subnet(self, **subnet):
+        logger.debug('create_subnet')
         try:
             self.client_obj = subnet
             self.convert_to_drb()
             self.drb_obj = self.session.post('subnets', self.drb_obj)
             self.convert_to_client()
+            logger.info('Created ' + self.client_obj['name'])
             return self.client_obj
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def update_subnet(self, subnet, subnet_name):
+        logger.debug('update_subnet')
         try:
-            result = self.session.put('subnets', subnet, subnet_name)
-            return result
+            self.client_obj = subnet
+            self.convert_to_drb()
+            self.client_obj = self.session.put('subnets', self.drb_obj, subnet_name)
+            self.convert_to_client()
+            logger.info('Updated ' + subnet_name)
+            return self.client_obj
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def delete_subnet(self, subnet_name):
+        logger.debug('delete_subnet')
         try:
             result = self.session.delete('subnets', subnet_name)
+            logger.info('Deleted ' + subnet_name)
             return result
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def get_subnet_all_actions(self, subnet_name):
+        logger.debug('get_all_subnet_actions')
         try:
             result = self.session.get('subnets/' + subnet_name + '/actions')
             return result
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def get_subnet_action(self, subnet_name, cmd):
+        logger.debug('get_subnet_action')
         try:
             result = self.session.get('subnets/' + subnet_name + '/actions', cmd)
             return result
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def execute_subnet_action(self, subnet_name, cmd):
+        logger.debug('execute_subnet_action')
         try:
             result = self.session.post('subnets/' + subnet_name + '/actions/' + cmd, {})
             if result == 400:
@@ -117,13 +135,14 @@ class SubnetsHttp(ApiHttp):
             else:
                 return result
         except AuthorizationError as error:
-            print error
+            logger.error(error)
             raise error
         except ConnectionError as error:
-            print error
+            logger.error(error)
             raise error
 
     def convert_to_drb(self):
+        logger.debug('convert_to_drb')
         """
         clientSubnet:
             address: "10.197.111.0"
@@ -155,7 +174,6 @@ class SubnetsHttp(ApiHttp):
               }
         :return: 
         """
-        print self.client_obj
         address = self.client_obj['address'] + '/' + str(IPAddress(self.client_obj['netmask']).netmask_bits())
         self.drb_obj = {
             "ActiveEnd": self.client_obj['range'].split(' ')[1],
@@ -201,6 +219,8 @@ class SubnetsHttp(ApiHttp):
 
             ]
         }
+        logger.info('Converted client to drb')
+        logger.info(self.drb_obj)
 
     def convert_to_client(self):
         """
@@ -264,3 +284,5 @@ class SubnetsHttp(ApiHttp):
             'router': self.drb_obj['Options'][3]['Value'],
             'type': self.drb_obj['Description']
         }
+        logger.info('Converted drb to client')
+        logger.info(self.client_obj)

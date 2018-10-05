@@ -14,26 +14,22 @@
 
 import unittest
 
-from drb_python.subnets_http import SubnetsHttp
-from drb_python.api_http import ConnectionStatus
 from drb_python.http_exceptions import AuthorizationError, ConnectionError
 from drb_python.drb_exceptions import ActionError, AlreadyExists
-from subnet import Subnet
-from http_session import HttpSession
+from drb_python.subnet import Subnet
+from drb_python.http_session import HttpSession
 
 
-
-class SubnetHttps(unittest.TestCase):
+class SubnetTest(unittest.TestCase):
     """
     Tests for functions located in SubnetHttps
     """
-
     def test_create_subnet(self):
         login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}
-        subnetObject = {
+        subnet_object = {
             'address': '10.197.111.0',
             'broadcast_address': '10.197.111.255',
-            'default_lease': 7600,
+            'default_lease': 7200,
             'dn': 'cablelabs.com',
             'dns': '8.8.8.8',
             'listen_iface': 'eno1',
@@ -45,15 +41,45 @@ class SubnetHttps(unittest.TestCase):
             'type': 'management'
         }
 
+        subnet_object2 = {
+            'address': '10.197.111.0',
+            'broadcast_address': '10.197.111.255',
+            'default_lease': 7600,
+            'dn': 'cablelabs.com',
+            'dns': '8.8.8.8',
+            'listen_iface': 'eno1',
+            'max_lease': 7600,
+            'name': 'Management_SUBNET',
+            'netmask': '255.255.255.0',
+            'range': '10.197.111.12 10.197.111.17',
+            'router': '10.197.111.1',
+            'type': 'management'
+        }
+
         try:
             session = HttpSession('https://10.197.113.130:8092', login['username'], login['password'])
 
-            subnet = Subnet(session, **subnetObject)
-            subnet.create()
+            subnet = Subnet(session, **subnet_object)
+            self.assertTrue(subnet.create())
+            self.assertTrue(subnet.fetch())
+            temp = subnet.get()
+            for key in temp:
+                self.assertEqual(subnet_object[key], temp[key])
+            for key in subnet_object:
+                self.assertEqual(subnet_object[key], temp[key])
 
-            print subnet.fetch()
+            temp = subnet.get_all()
+            self.assertEqual(len(temp), 1)
 
-            subnet.delete()
+            subnet.update(**subnet_object2)
+
+            temp = subnet.get()
+            for key in temp:
+                self.assertEqual(subnet_object2[key], temp[key])
+            for key in subnet_object2:
+                self.assertEqual(subnet_object2[key], temp[key])
+
+            self.assertTrue(subnet.delete())
 
         except ConnectionError as err:
             print err
@@ -64,9 +90,3 @@ class SubnetHttps(unittest.TestCase):
         except AlreadyExists as err:
             print err
             self.fail(err)
-        except ActionError as err:
-            self.assertEqual(err.message, 'Action is not avalible on subnet ens5')
-            self.assertEqual(err.expression, 'tests')
-            result = r.delete_subnet('ens5')
-            self.assertEqual(result['Name'], 'ens5')
-            self.assertEqual(result['Subnet'], '10.1.1.10/24')

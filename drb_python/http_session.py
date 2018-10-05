@@ -15,9 +15,12 @@
 
 import requests
 import urllib3
+import logging
 from http_exceptions import AuthorizationError, ConnectionError
 from drb_exceptions import AlreadyExists
+
 urllib3.disable_warnings()
+logger = logging.getLogger('drb-python')
 
 
 class HttpSession:
@@ -36,13 +39,13 @@ class HttpSession:
                 body = r.json()
                 self.token = body['Token']
             elif r.status_code == 401 or r.status_code == 403:
-                print 'Failed Authorizing ' + str(r.status_code) + ' '
+                logger.error('Failed Authorizing ' + str(r.status_code))
                 raise AuthorizationError(self.username + ', ' + self.password,
                                          'Failed To Authenticate with the Digital Rebar Server', r.status_code, r.text)
         except requests.ConnectionError as err:
-                print 'Error Connecting to Digital Rebar Server'
-                raise ConnectionError(self.url, 'Failed to Connect with the Digital Rebar Server',
-                                      400, str(err.message))
+            logger.error('Error Connecting to Digital Rebar Server')
+            raise ConnectionError(self.url, 'Failed to Connect with the Digital Rebar Server',
+                                  400, str(err.message))
 
     def is_authorized(self):
         return self.token != ''
@@ -58,8 +61,8 @@ class HttpSession:
         if r.status_code == 200:
             return r.json()
         else:
-            print 'Error on Get ' + str(r.status_code)
-            print r.json()
+            logger.error('Error on Get ' + str(r.status_code))
+            logger.error(r.json())
             return r.status_code
 
     def post(self, resource, body):
@@ -67,12 +70,12 @@ class HttpSession:
             self.authorize()
         headers = {'Authorization': 'Bearer ' + self.token}
         actual_resource = resource
-        print body
+        logger.debug(body)
         r = requests.post(self.url + '/api/v3/' + actual_resource, headers=headers, json=body, verify=False)
         if r.status_code == 201:
             return r.json()
         else:
-            print 'Error on Post ' + str(r.status_code)
+            logger.error('Error on Post ' + str(r.status_code))
             temp = r.json()
             raise AlreadyExists(body['Name'], str(temp['Messages'][0]))
 
@@ -85,11 +88,11 @@ class HttpSession:
         if r.status_code == 200:
             return r.json()
         elif r.status_code == 404:
-            print 'Deleting a non-existant object, ignoring'
+            logger.info('Deleting a non-existent object, ignoring')
             return {}
         else:
-            print 'Error on Delete ' + str(r.status_code)
-            print r.json()
+            logger.error('Error on Delete ' + str(r.status_code))
+            logger.error(r.json())
             return r.status_code
 
     def put(self, resource, body, key):
@@ -97,11 +100,10 @@ class HttpSession:
             self.authorize()
         headers = {'Authorization': 'Bearer ' + self.token}
         actual_resource = resource + '/' + key
-        r = requests.post(self.url + '/api/v3/' + actual_resource, headers=headers, json=body, verify=False)
+        r = requests.put(self.url + '/api/v3/' + actual_resource, headers=headers, json=body, verify=False)
         if r.status_code == 200:
             return r.json()
         else:
-            print 'Error on Put ' + str(r.status_code)
-            print r.json()
+            logger.error('Error on Put ' + str(r.status_code))
+            logger.error(r.json())
             return r.status_code
-

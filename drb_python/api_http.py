@@ -22,7 +22,7 @@ class ConnectionStatus(Enum):
     ERROR = 3
 
 
-class ApiHttp():
+class ApiHttp(object):
     """
     Base for All HTTP based API Calls
     """

@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class DrbError(Exception):
     """Base class for drb-exceptions in this module."""
+
     def __init__(self, expression, message):
         self.expression = expression
         self.message = message
@@ -28,8 +30,10 @@ class ActionError(DrbError):
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, action, message):
         DrbError.__init__(self, action, message)
+
 
 class AlreadyExists(DrbError):
     """Exception raised for authorization errors.
