@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from http_exceptions import AuthorizationError, ConnectionError
-from subnets_http import SubnetsHttp
+from exceptions.http_exceptions import AuthorizationError, ConnectionError
+from translation_layer.subnets_http import SubnetsHttp
 import logging
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO)
 logger = logging.getLogger('drb-python')
+
 
 def create_subnet(session, clientSubnet):
     subnet = Subnet(session, clientSubnet)
@@ -73,7 +74,7 @@ class Subnet():
         '''
         Fetches all subnets form DRP
         Note this data is not cached
-        :return: Array of Subnets
+        :return: List of Subnets
         '''
         try:
             subnet_list = self.api.get_all_subnets()

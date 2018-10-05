@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from api_http import ApiHttp
-from http_exceptions import AuthorizationError, ConnectionError
-from drb_exceptions import  ActionError
+from exceptions.http_exceptions import AuthorizationError, ConnectionError
+from exceptions.drb_exceptions import  ActionError
 
 
 class ReservationsHttp(ApiHttp):

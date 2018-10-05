@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from enum import Enum
-from http_exceptions import ConnectionError, AuthorizationError
+from exceptions.http_exceptions import ConnectionError, AuthorizationError
 
 
 class ConnectionStatus(Enum):

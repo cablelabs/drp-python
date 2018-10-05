@@ -14,10 +14,10 @@
 
 import unittest
 
-from drb_python.http_exceptions import AuthorizationError, ConnectionError
-from drb_python.drb_exceptions import ActionError, AlreadyExists
+from drb_python.exceptions.http_exceptions import AuthorizationError, ConnectionError
+from drb_python.exceptions.drb_exceptions import AlreadyExistsError
 from drb_python.subnet import Subnet
-from drb_python.http_session import HttpSession
+from drb_python.network_layer.http_session import HttpSession
 
 
 class SubnetTest(unittest.TestCase):
@@ -87,6 +87,6 @@ class SubnetTest(unittest.TestCase):
         except AuthorizationError as err:
             print err
             self.fail(err)
-        except AlreadyExists as err:
+        except AlreadyExistsError as err:
             print err
             self.fail(err)

@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from http_exceptions import AuthorizationError, ConnectionError
-from reservations_http import ReservationsHttp
+from exceptions.http_exceptions import AuthorizationError, ConnectionError
+from translation_layer.reservations_http import ReservationsHttp
 from base import Base
 
 
