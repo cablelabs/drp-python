@@ -17,6 +17,7 @@ import unittest
 from drb_python.subnet import Subnet
 from drb_python.http_session import HttpSession
 import logging
+from uuid import uuid4
 
 logging.basicConfig(
     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] '
@@ -49,7 +50,7 @@ class SubnetTest(unittest.TestCase):
             'dns': '8.8.8.8',
             'listen_iface': 'eno1',
             'max_lease': 7200,
-            'name': 'Management_SUBNET',
+            'name': 'subnet' + str(uuid4()),
             'netmask': '255.255.255.0',
             'range': '10.197.111.12 10.197.111.16',
             'router': '10.197.111.1',
@@ -64,7 +65,7 @@ class SubnetTest(unittest.TestCase):
             'dns': '8.8.8.8',
             'listen_iface': 'eno1',
             'max_lease': 7600,
-            'name': 'Management_SUBNET',
+            'name': subnet_object['name'],
             'netmask': '255.255.255.0',
             'range': '10.197.111.12 10.197.111.17',
             'router': '10.197.111.1',
