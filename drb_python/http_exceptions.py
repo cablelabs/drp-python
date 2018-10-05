@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class Error(Exception):
     """Base class for drb-exceptions in this module."""
 

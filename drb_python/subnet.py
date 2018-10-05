@@ -19,8 +19,8 @@ import logging
 logger = logging.getLogger('drb-python')
 
 
-def create_subnet(session, **clientSubnet):
-    subnet = Subnet(session, **clientSubnet)
+def create_subnet(session, **client_subnet):
+    subnet = Subnet(session, **client_subnet)
     subnet.create()
     return subnet
 
@@ -31,7 +31,7 @@ class Subnet:
 
     Args:
         session - Session object to connect to DRB
-        clientSubnet:
+        client_subnet:
             address: '10.197.111.0'
             broadcast-address: '10.197.111.255'
             default-lease: 7600
@@ -47,9 +47,9 @@ class Subnet:
 
     """
 
-    def __init__(self, session, **clientSubnet):
+    def __init__(self, session, **client_subnet):
         logger.debug('__init__')
-        self.client_obj = clientSubnet
+        self.client_obj = client_subnet
         self.api = SubnetsHttp(session)
 
     def create(self):

@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from http_exceptions import AuthorizationError, ConnectionError
-from drb_exceptions import ActionError
 from machines_http import MachinesHttp
 from uuid import uuid1
 
@@ -30,7 +29,7 @@ class Machine:
             self.login = {'username': 'rocketskates',
                           'password': 'r0cketsk8ts'}
             self.uuid = uuid
-            if uuid == None:
+            if uuid is None:
                 self.uuid = uuid1()
             self.machine['uuid'] = self.uuid
             self.machineApi = MachinesHttp(self.host, self.login)
@@ -73,7 +72,7 @@ class Machine:
             print error
             raise error
 
-    def updated(self, updated_machine):
+    def update(self, updated_machine):
         try:
             self.machine = self.machineApi.update_machine(updated_machine,
                                                           self.uuid)
