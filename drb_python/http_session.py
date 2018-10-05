@@ -17,7 +17,7 @@ import requests
 import urllib3
 import logging
 from http_exceptions import AuthorizationError, ConnectionError
-from drb_exceptions import AlreadyExists
+from drb_exceptions import AlreadyExists, NotFoundError
 
 urllib3.disable_warnings()
 logger = logging.getLogger('drb-python')
@@ -69,7 +69,8 @@ class HttpSession:
         else:
             logger.error('Error on Get ' + str(r.status_code))
             logger.error(r.json())
-            return r.status_code
+            temp = r.json()
+            raise NotFoundError(key, str(temp['Messages'][0]))
 
     def post(self, resource, body):
         if not self.is_authorized():

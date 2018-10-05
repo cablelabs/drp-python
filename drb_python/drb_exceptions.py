@@ -36,7 +36,16 @@ class ActionError(DrbError):
 
 
 class AlreadyExists(DrbError):
-    """Exception raised for authorization errors.
+    """Exception raised trying to create an existing resource.
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, key, message):
+        DrbError.__init__(self, key, message)
+
+class NotFoundError(DrbError):
+    """Exception raised when a resource doesn't exist errors.
     Attributes:
         expression -- input expression in which the error occurred
         message -- explanation of the error

@@ -16,6 +16,7 @@ import unittest
 
 from drb_python.subnet import Subnet
 from drb_python.http_session import HttpSession
+from drb_exceptions import NotFoundError
 import logging
 from uuid import uuid4
 
@@ -27,14 +28,12 @@ logging.basicConfig(
 
 logger = logging.getLogger('drb-python')
 
-subnet = None
-
 
 class SubnetTest(unittest.TestCase):
 
     def tearDown(self):
-        if subnet is not None:
-            subnet.delete()
+        if self.subnet is not None:
+            self.subnet.delete()
 
     """
     Tests for functions located in SubnetHttps
@@ -75,19 +74,26 @@ class SubnetTest(unittest.TestCase):
         session = HttpSession('https://10.197.113.130:8092', login['username'],
                               login['password'])
 
-        subnet = Subnet(session, **subnet_object)
-        subnet.create()
-        subnet.fetch()
-        temp = subnet.get()
+        self.subnet = Subnet(session, **subnet_object)
+        self.subnet.create()
+        self.subnet.fetch()
+        temp = self.subnet.get()
 
         self.assertEqual(subnet_object, temp)
 
-        temp = subnet.get_all()
+        temp = self.subnet.get_all()
         self.assertEqual(len(temp), 1)
 
-        subnet.update(**subnet_object2)
+        self.subnet.update(**subnet_object2)
 
-        temp = subnet.get()
+        temp = self.subnet.get()
         self.assertEqual(subnet_object2, temp)
 
-        subnet.delete()
+        self.subnet.delete()
+
+        try:
+            self.subnet.fetch()
+            self.fail('Resource should be deleted')
+        except NotFoundError:
+            self.assertTrue(True)
+
