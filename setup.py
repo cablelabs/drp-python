@@ -35,7 +35,8 @@ setup(
         'idna',
         'requests',
         'urllib3',
-        'uuid'
+        'uuid',
+        'netaddr'
     ],
     test_suite='nose.collector',
     tests_require=['nose'],

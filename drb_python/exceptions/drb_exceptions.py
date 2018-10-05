@@ -35,9 +35,9 @@ class ActionError(DrbError):
         DrbError.__init__(self, action, message)
 
 
-class AlreadyExists(DrbError):
+class AlreadyExistsError(DrbError):
     """Exception raised trying to create an existing resource.
-    Attributes:
+       Attributes:
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """

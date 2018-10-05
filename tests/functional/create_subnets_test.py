@@ -15,8 +15,8 @@
 import unittest
 
 from drb_python.subnet import Subnet
-from drb_python.http_session import HttpSession
-from drb_exceptions import NotFoundError
+from drb_python.network_layer.http_session import HttpSession
+from drb_python.exceptions.drb_exceptions import NotFoundError
 import logging
 from uuid import uuid4
 
@@ -27,6 +27,7 @@ logging.basicConfig(
     level=logging.INFO)
 
 logger = logging.getLogger('drb-python')
+
 
 
 class SubnetTest(unittest.TestCase):

@@ -12,17 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from http_exceptions import AuthorizationError, ConnectionError
-from subnets_http import SubnetsHttp
+from exceptions.http_exceptions import AuthorizationError, ConnectionError
+from translation_layer.subnets_http import SubnetsHttp
 import logging
 
 logger = logging.getLogger('drb-python')
-
-
-def create_subnet(session, **client_subnet):
-    subnet = Subnet(session, **client_subnet)
-    subnet.create()
-    return subnet
 
 
 class Subnet:
@@ -49,14 +43,14 @@ class Subnet:
 
     def __init__(self, session, **client_subnet):
         logger.debug('__init__')
-        self.client_obj = client_subnet
-        self.api = SubnetsHttp(session)
+        self.__subnet_model = client_subnet
+        self.__api = SubnetsHttp(session)
 
     def create(self):
         logger.debug('create')
         try:
-            self.api.open()
-            self.client_obj = self.api.create_subnet(**self.client_obj)
+            self.__api.open()
+            self.__subnet_model = self.__api.create_subnet(**self.__subnet_model)
         except ConnectionError as error:
             logger.error(error)
             raise error
@@ -65,27 +59,11 @@ class Subnet:
             raise error
 
     def get(self):
-        return self.client_obj
+        return self.__subnet_model
 
-    def get_all(self):
-        '''
-        Fetches all subnets form DRP
-        Note this data is not cached
-        :return: Array of Subnets
-        '''
+    def refresh(self):
         try:
-            subnet_list = self.api.get_all_subnets()
-            return subnet_list
-        except ConnectionError as error:
-            logger.error(error)
-            raise error
-        except AuthorizationError as error:
-            logger.error(error)
-            raise error
-
-    def fetch(self):
-        try:
-            self.client_obj = self.api.get_subnet(self.client_obj['name'])
+            self.__subnet_model = self.__api.get_subnet(self.__subnet_model['name'])
         except ConnectionError as error:
             logger.error(error)
             raise error
@@ -95,8 +73,8 @@ class Subnet:
 
     def update(self, **updated_object):
         try:
-            self.client_obj = self.api.update_subnet(updated_object,
-                                                     self.client_obj['name'])
+            self.__subnet_model = self.__api.update_subnet(updated_object,
+                                                     self.__subnet_model['name'])
         except ConnectionError as error:
             logger.error(error)
             raise error
@@ -106,10 +84,26 @@ class Subnet:
 
     def delete(self):
         try:
-            self.api.delete_subnet(self.client_obj['name'])
+            self.__api.delete_subnet(self.__subnet_model['name'])
         except ConnectionError as error:
             logger.error(error)
             raise error
         except AuthorizationError as error:
             logger.error(error)
             raise error
+
+def get_all(session):
+    '''
+    Fetches all subnets form DRP
+    Note this data is not cached
+    :return: List of Subnets
+    '''
+    try:
+        subnet_list = SubnetsHttp.get_all_subnets(session)
+        return subnet_list
+    except ConnectionError as error:
+        logger.error(error)
+        raise error
+    except AuthorizationError as error:
+        logger.error(error)
+        raise error

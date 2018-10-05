@@ -4,4 +4,10 @@ enum>=0.4.7
 idna>=2.7
 requests>=2.19.1
 urllib3>=1.23
+<<<<<<< HEAD
 netaddr>=0.7.19
+=======
+netaddr>=0.7.19
+
+
+>>>>>>> issue-4
