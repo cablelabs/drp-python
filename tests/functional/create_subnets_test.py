@@ -14,10 +14,17 @@
 
 import unittest
 
-from drb_python.http_exceptions import AuthorizationError, ConnectionError
-from drb_python.drb_exceptions import ActionError, AlreadyExists
 from drb_python.subnet import Subnet
 from drb_python.http_session import HttpSession
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] '
+           '%(message)s',
+    datefmt='%d-%m-%Y:%H:%M:%S',
+    level=logging.INFO)
+
+logger = logging.getLogger('drb-python')
 
 subnet = None
 
@@ -27,9 +34,11 @@ class SubnetTest(unittest.TestCase):
     def tearDown(self):
         if subnet is not None:
             subnet.delete()
+
     """
     Tests for functions located in SubnetHttps
     """
+
     def test_create_subnet(self):
         login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}
         subnet_object = {
@@ -62,32 +71,22 @@ class SubnetTest(unittest.TestCase):
             'type': 'management'
         }
 
-        try:
-            session = HttpSession('https://10.197.113.130:8092', login['username'], login['password'])
+        session = HttpSession('https://10.197.113.130:8092', login['username'],
+                              login['password'])
 
-            subnet = Subnet(session, **subnet_object)
-            subnet.create()
-            subnet.fetch()
-            temp = subnet.get()
+        subnet = Subnet(session, **subnet_object)
+        subnet.create()
+        subnet.fetch()
+        temp = subnet.get()
 
-            self.assertEqual(subnet_object, temp)
+        self.assertEqual(subnet_object, temp)
 
-            temp = subnet.get_all()
-            self.assertEqual(len(temp), 1)
+        temp = subnet.get_all()
+        self.assertEqual(len(temp), 1)
 
-            subnet.update(**subnet_object2)
+        subnet.update(**subnet_object2)
 
-            temp = subnet.get()
-            self.assertEqual(subnet_object2, temp)
+        temp = subnet.get()
+        self.assertEqual(subnet_object2, temp)
 
-            subnet.delete()
-
-        except ConnectionError as err:
-            print err
-            self.fail(err)
-        except AuthorizationError as err:
-            print err
-            self.fail(err)
-        except AlreadyExists as err:
-            print err
-            self.fail(err)
+        subnet.delete()
