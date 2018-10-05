@@ -24,13 +24,13 @@ logging.basicConfig(
 logger = logging.getLogger('drb-python')
 
 
-def create_subnet(session, clientSubnet):
-    subnet = Subnet(session, clientSubnet)
+def create_subnet(session, **clientSubnet):
+    subnet = Subnet(session, **clientSubnet)
     subnet.create()
     return subnet
 
 
-class Subnet():
+class Subnet:
     """
     Client Subnet Object
 
@@ -52,7 +52,6 @@ class Subnet():
 
     """
 
-
     def __init__(self, session, **clientSubnet):
         logger.debug('__init__')
         self.client_obj = clientSubnet
@@ -63,7 +62,6 @@ class Subnet():
         try:
             self.api.open()
             self.client_obj = self.api.create_subnet(**self.client_obj)
-            return True
         except ConnectionError as error:
             logger.error(error)
             raise error
@@ -93,7 +91,6 @@ class Subnet():
     def fetch(self):
         try:
             self.client_obj = self.api.get_subnet(self.client_obj['name'])
-            return True
         except ConnectionError as error:
             logger.error(error)
             raise error
@@ -105,7 +102,6 @@ class Subnet():
         try:
             self.client_obj = self.api.update_subnet(updated_object,
                                                      self.client_obj['name'])
-            return True
         except ConnectionError as error:
             logger.error(error)
             raise error
@@ -116,7 +112,6 @@ class Subnet():
     def delete(self):
         try:
             self.api.delete_subnet(self.client_obj['name'])
-            return True
         except ConnectionError as error:
             logger.error(error)
             raise error

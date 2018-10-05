@@ -19,8 +19,14 @@ from drb_python.drb_exceptions import ActionError, AlreadyExists
 from drb_python.subnet import Subnet
 from drb_python.http_session import HttpSession
 
+subnet = None
+
 
 class SubnetTest(unittest.TestCase):
+
+    def tearDown(self):
+        if subnet is not None:
+            subnet.delete()
     """
     Tests for functions located in SubnetHttps
     """
@@ -60,8 +66,8 @@ class SubnetTest(unittest.TestCase):
             session = HttpSession('https://10.197.113.130:8092', login['username'], login['password'])
 
             subnet = Subnet(session, **subnet_object)
-            self.assertTrue(subnet.create())
-            self.assertTrue(subnet.fetch())
+            subnet.create()
+            subnet.fetch()
             temp = subnet.get()
 
             self.assertEqual(subnet_object, temp)
@@ -74,7 +80,7 @@ class SubnetTest(unittest.TestCase):
             temp = subnet.get()
             self.assertEqual(subnet_object2, temp)
 
-            self.assertTrue(subnet.delete())
+            subnet.delete()
 
         except ConnectionError as err:
             print err
