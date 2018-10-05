@@ -14,13 +14,14 @@
 
 from api_http import ApiHttp
 from http_exceptions import AuthorizationError, ConnectionError
-from drb_exceptions import  ActionError
+from drb_exceptions import ActionError
 
 
 class MachinesHttp(ApiHttp):
     """
      All HTTP based API Calls related to Machines
     """
+
     def __init__(self, host, login, verifyCert=False):
         ApiHttp.__init__(self, host, login, verifyCert)
 
@@ -103,7 +104,8 @@ class MachinesHttp(ApiHttp):
 
     def create_machine_params(self, uuid, param):
         try:
-            result = self.httpProxy.post('machines'/ + uuid + '/params', param)
+            result = self.httpProxy.post('machines' / + uuid + '/params',
+                                         param)
             return result
         except AuthorizationError as error:
             print error
@@ -114,7 +116,8 @@ class MachinesHttp(ApiHttp):
 
     def create_single_machine_param(self, uuid, key, param):
         try:
-            result = self.httpProxy.post('machines'/ + uuid + '/params/' + key, param)
+            result = self.httpProxy.post(
+                'machines' / + uuid + '/params/' + key, param)
             return result
         except AuthorizationError as error:
             print error
@@ -145,7 +148,6 @@ class MachinesHttp(ApiHttp):
             print error
             raise error
 
-
     def get_machine_action(self, uuid, cmd):
         try:
             result = self.httpProxy.get('machines/' + uuid + '/actions', cmd)
@@ -159,9 +161,11 @@ class MachinesHttp(ApiHttp):
 
     def execute_machine_action(self, uuid, cmd):
         try:
-            result = self.httpProxy.post('machines/' + uuid + '/actions/' + cmd, {})
+            result = self.httpProxy.post(
+                'machines/' + uuid + '/actions/' + cmd, {})
             if result == 400:
-                raise ActionError(cmd, 'Action is not available on machine ' + uuid)
+                raise ActionError(cmd,
+                                  'Action is not available on machine ' + uuid)
             else:
                 return result
         except AuthorizationError as error:

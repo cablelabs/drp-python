@@ -63,10 +63,8 @@ class SubnetTest(unittest.TestCase):
             self.assertTrue(subnet.create())
             self.assertTrue(subnet.fetch())
             temp = subnet.get()
-            for key in temp:
-                self.assertEqual(subnet_object[key], temp[key])
-            for key in subnet_object:
-                self.assertEqual(subnet_object[key], temp[key])
+
+            self.assertEqual(subnet_object, temp)
 
             temp = subnet.get_all()
             self.assertEqual(len(temp), 1)
@@ -74,10 +72,7 @@ class SubnetTest(unittest.TestCase):
             subnet.update(**subnet_object2)
 
             temp = subnet.get()
-            for key in temp:
-                self.assertEqual(subnet_object2[key], temp[key])
-            for key in subnet_object2:
-                self.assertEqual(subnet_object2[key], temp[key])
+            self.assertEqual(subnet_object2, temp)
 
             self.assertTrue(subnet.delete())
 

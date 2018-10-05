@@ -14,13 +14,14 @@
 
 from api_http import ApiHttp
 from http_exceptions import AuthorizationError, ConnectionError
-from drb_exceptions import  ActionError
+from drb_exceptions import ActionError
 
 
 class ReservationsHttp(ApiHttp):
     """
      All HTTP based API Calls related to Reservations
     """
+
     def __init__(self, host, login, verifyCert=False):
         ApiHttp.__init__(self, host, login, verifyCert)
 
@@ -92,7 +93,8 @@ class ReservationsHttp(ApiHttp):
 
     def get_reservation_action(self, address, cmd):
         try:
-            result = self.httpProxy.get('reservations/' + address + '/actions', cmd)
+            result = self.httpProxy.get('reservations/' + address + '/actions',
+                                        cmd)
             return result
         except AuthorizationError as error:
             print error
@@ -103,9 +105,12 @@ class ReservationsHttp(ApiHttp):
 
     def execute_reservation_action(self, address, cmd):
         try:
-            result = self.httpProxy.post('reservations/' + address + '/actions/' + cmd, {})
+            result = self.httpProxy.post(
+                'reservations/' + address + '/actions/' + cmd, {})
             if result == 400:
-                raise ActionError(cmd, 'Action is not available on reservation ' + address)
+                raise ActionError(cmd,
+                                  'Action is not available on reservation '
+                                  + address)
             else:
                 return result
         except AuthorizationError as error:

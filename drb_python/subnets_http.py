@@ -17,6 +17,7 @@ from http_exceptions import AuthorizationError, ConnectionError
 from drb_exceptions import ActionError
 from netaddr import IPAddress, IPNetwork
 import logging
+
 logger = logging.getLogger('drb-python')
 
 
@@ -24,6 +25,7 @@ class SubnetsHttp(ApiHttp):
     """
      All HTTP based API Calls related to Subnets
     """
+
     def __init__(self, session):
         super(SubnetsHttp, self).__init__(session)
         logger.debug('__init__')
@@ -78,7 +80,8 @@ class SubnetsHttp(ApiHttp):
         try:
             self.client_obj = subnet
             self.convert_to_drb()
-            self.client_obj = self.session.put('subnets', self.drb_obj, subnet_name)
+            self.client_obj = self.session.put('subnets', self.drb_obj,
+                                               subnet_name)
             self.convert_to_client()
             logger.info('Updated ' + subnet_name)
             return self.client_obj
@@ -117,7 +120,8 @@ class SubnetsHttp(ApiHttp):
     def get_subnet_action(self, subnet_name, cmd):
         logger.debug('get_subnet_action')
         try:
-            result = self.session.get('subnets/' + subnet_name + '/actions', cmd)
+            result = self.session.get('subnets/' + subnet_name + '/actions',
+                                      cmd)
             return result
         except AuthorizationError as error:
             logger.error(error)
@@ -129,9 +133,12 @@ class SubnetsHttp(ApiHttp):
     def execute_subnet_action(self, subnet_name, cmd):
         logger.debug('execute_subnet_action')
         try:
-            result = self.session.post('subnets/' + subnet_name + '/actions/' + cmd, {})
+            result = self.session.post(
+                'subnets/' + subnet_name + '/actions/' + cmd, {})
             if result == 400:
-                raise ActionError(cmd, 'Action is not available on subnet ' + subnet_name)
+                raise ActionError(cmd,
+                                  'Action is not available on subnet ' +
+                                  subnet_name)
             else:
                 return result
         except AuthorizationError as error:
@@ -174,7 +181,8 @@ class SubnetsHttp(ApiHttp):
               }
         :return: 
         """
-        address = self.client_obj['address'] + '/' + str(IPAddress(self.client_obj['netmask']).netmask_bits())
+        address = self.client_obj['address'] + '/' + str(
+            IPAddress(self.client_obj['netmask']).netmask_bits())
         self.drb_obj = {
             "ActiveEnd": self.client_obj['range'].split(' ')[1],
             "ActiveLeaseTime": self.client_obj['default_lease'],
@@ -280,7 +288,8 @@ class SubnetsHttp(ApiHttp):
             'max_lease': self.drb_obj['ReservedLeaseTime'],
             'name': self.drb_obj['Name'],
             'netmask': netmask,
-            'range': self.drb_obj['ActiveStart'] + ' ' + self.drb_obj['ActiveEnd'],
+            'range': self.drb_obj['ActiveStart'] + ' ' + self.drb_obj[
+                'ActiveEnd'],
             'router': self.drb_obj['Options'][3]['Value'],
             'type': self.drb_obj['Description']
         }

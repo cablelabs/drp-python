@@ -33,18 +33,23 @@ class HttpSession:
 
     def authorize(self):
         try:
-            r = requests.get(self.url + '/api/v3/users/rocketskates/token?ttl=28800',
-                             auth=(self.username, self.password), verify=self.verify_cert)
+            r = requests.get(
+                self.url + '/api/v3/users/rocketskates/token?ttl=28800',
+                auth=(self.username, self.password), verify=self.verify_cert)
             if r.status_code == 200:
                 body = r.json()
                 self.token = body['Token']
             elif r.status_code == 401 or r.status_code == 403:
                 logger.error('Failed Authorizing ' + str(r.status_code))
                 raise AuthorizationError(self.username + ', ' + self.password,
-                                         'Failed To Authenticate with the Digital Rebar Server', r.status_code, r.text)
+                                         'Failed To Authenticate with the '
+                                         'Digital Rebar Server',
+                                         r.status_code, r.text)
         except requests.ConnectionError as err:
             logger.error('Error Connecting to Digital Rebar Server')
-            raise ConnectionError(self.url, 'Failed to Connect with the Digital Rebar Server',
+            raise ConnectionError(self.url,
+                                  'Failed to Connect with the Digital Rebar '
+                                  'Server',
                                   400, str(err.message))
 
     def is_authorized(self):
@@ -57,7 +62,8 @@ class HttpSession:
         actual_resource = resource
         if key is not None:
             actual_resource = actual_resource + '/' + key
-        r = requests.get(self.url + '/api/v3/' + actual_resource, headers=headers, verify=False)
+        r = requests.get(self.url + '/api/v3/' + actual_resource,
+                         headers=headers, verify=False)
         if r.status_code == 200:
             return r.json()
         else:
@@ -71,7 +77,8 @@ class HttpSession:
         headers = {'Authorization': 'Bearer ' + self.token}
         actual_resource = resource
         logger.debug(body)
-        r = requests.post(self.url + '/api/v3/' + actual_resource, headers=headers, json=body, verify=False)
+        r = requests.post(self.url + '/api/v3/' + actual_resource,
+                          headers=headers, json=body, verify=False)
         if r.status_code == 201:
             return r.json()
         else:
@@ -84,7 +91,8 @@ class HttpSession:
             self.authorize()
         headers = {'Authorization': 'Bearer ' + self.token}
         actual_resource = resource + '/' + key
-        r = requests.delete(self.url + '/api/v3/' + actual_resource, headers=headers, verify=False)
+        r = requests.delete(self.url + '/api/v3/' + actual_resource,
+                            headers=headers, verify=False)
         if r.status_code == 200:
             return r.json()
         elif r.status_code == 404:
@@ -100,7 +108,8 @@ class HttpSession:
             self.authorize()
         headers = {'Authorization': 'Bearer ' + self.token}
         actual_resource = resource + '/' + key
-        r = requests.put(self.url + '/api/v3/' + actual_resource, headers=headers, json=body, verify=False)
+        r = requests.put(self.url + '/api/v3/' + actual_resource,
+                         headers=headers, json=body, verify=False)
         if r.status_code == 200:
             return r.json()
         else:

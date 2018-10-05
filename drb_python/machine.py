@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from http_exceptions import AuthorizationError, ConnectionError
-from drb_exceptions import  ActionError
+from drb_exceptions import ActionError
 from machines_http import MachinesHttp
 from uuid import uuid1
 
@@ -22,11 +22,13 @@ class Machine():
     """
      Client Machine class for interacting with DRP
     """
+
     def __init__(self, machine, uuid=None):
         try:
             self.machine = machine
             self.host = 'https://10.197.113.130:8092'
-            self.login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}
+            self.login = {'username': 'rocketskates',
+                          'password': 'r0cketsk8ts'}
             self.uuid = uuid
             if uuid == None:
                 self.uuid = uuid1()
@@ -73,7 +75,8 @@ class Machine():
 
     def updated(self, updated_machine):
         try:
-            self.machine = self.machineApi.update_machine(updated_machine, self.uuid)
+            self.machine = self.machineApi.update_machine(updated_machine,
+                                                          self.uuid)
             return self.machine
         except ConnectionError as error:
             print error

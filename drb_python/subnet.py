@@ -16,10 +16,13 @@ from http_exceptions import AuthorizationError, ConnectionError
 from subnets_http import SubnetsHttp
 import logging
 
-logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+logging.basicConfig(
+    format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] '
+           '%(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO)
 logger = logging.getLogger('drb-python')
+
 
 def create_subnet(session, clientSubnet):
     subnet = Subnet(session, clientSubnet)
@@ -48,6 +51,7 @@ class Subnet():
             type: management
 
     """
+
     def __init__(self, session, **clientSubnet):
         logger.debug('__init__')
         self.client_obj = clientSubnet
@@ -98,7 +102,8 @@ class Subnet():
 
     def update(self, **updated_object):
         try:
-            self.client_obj = self.api.update_subnet(updated_object, self.client_obj['name'])
+            self.client_obj = self.api.update_subnet(updated_object,
+                                                     self.client_obj['name'])
             return True
         except ConnectionError as error:
             logger.error(error)
