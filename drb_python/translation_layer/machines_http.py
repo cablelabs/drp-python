@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from api_http import ApiHttp
-from exceptions.http_exceptions import AuthorizationError, ConnectionError
+from drb_python.exceptions.http_exceptions import AuthorizationError, ConnectionError
 from netaddr import IPAddress, IPNetwork
 import logging
 

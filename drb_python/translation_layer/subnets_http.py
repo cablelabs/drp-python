@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from translation_layer.api_http import ApiHttp
+from api_http import ApiHttp
 from exceptions.http_exceptions import AuthorizationError, ConnectionError
 from exceptions.drb_exceptions import ActionError
 from netaddr import IPAddress, IPNetwork
