@@ -13,7 +13,8 @@
 # limitations under the License.
 
 from enum import Enum
-from exceptions.http_exceptions import ConnectionError, AuthorizationError
+from drb_python.exceptions.http_exceptions import ConnectionError, \
+    AuthorizationError
 
 
 class ConnectionStatus(Enum):

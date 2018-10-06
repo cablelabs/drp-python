@@ -13,8 +13,9 @@
 # limitations under the License.
 
 from api_http import ApiHttp
-from drb_python.model_layer.subnet_model import SubnetModel
-from exceptions.http_exceptions import AuthorizationError, ConnectionError
+from drb_python.model_layer.subnet_config_model import SubnetModel
+from drb_python.exceptions.http_exceptions import AuthorizationError, \
+    ConnectionError
 from netaddr import IPAddress, IPNetwork
 import logging
 
@@ -32,65 +33,38 @@ class SubnetsHttp(ApiHttp):
 
     def get_subnet(self, subnet_name):
         logger.debug('get_subnet')
-        try:
-            drb_obj = self.session.get('subnets', subnet_name)
-            subnet_model = convert_to_client(drb_obj)
-            return subnet_model
-        except AuthorizationError as error:
-            logger.error(error)
-            raise error
-        except ConnectionError as error:
-            logger.error(error)
-            raise error
+        drb_obj = self.session.get('subnets', subnet_name)
+        subnet_model = convert_to_client(drb_obj)
+        return subnet_model
 
-    def create_subnet(self, subnet_model):
+    def create_subnet(self, subnet_config_model):
         logger.debug('create_subnet')
-        try:
-            drb_object = convert_to_drb(subnet_model)
-            drb_object = self.session.post('subnets', drb_object)
-            subnet_model = convert_to_client(drb_object)
-            logger.info('Created ' + subnet_model.name)
-            return subnet_model
-        except AuthorizationError as error:
-            logger.error(error)
-            raise error
-        except ConnectionError as error:
-            logger.error(error)
-            raise error
+        drb_object = convert_to_drb(subnet_config_model)
+        drb_object = self.session.post('subnets', drb_object)
+        subnet_model = convert_to_client(drb_object)
+        logger.info('Created ' + subnet_model.name)
+        return subnet_model
 
-    def update_subnet(self, subnet_model, subnet_name):
+    def update_subnet(self, subnet_config_model, subnet_name):
         logger.debug('update_subnet')
-        try:
-            drb_object = convert_to_drb(subnet_model)
-            drb_object = self.session.put('subnets', drb_object, subnet_name)
-            subnet_model = convert_to_client(drb_object)
-            logger.info('Updated ' + subnet_name)
-            return subnet_model
-        except AuthorizationError as error:
-            logger.error(error)
-            raise error
-        except ConnectionError as error:
-            logger.error(error)
-            raise error
+        drb_object = convert_to_drb(subnet_config_model)
+        drb_object = self.session.put('subnets', drb_object, subnet_name)
+        subnet_model = convert_to_client(drb_object)
+        logger.info('Updated ' + subnet_name)
+        return subnet_model
 
     def delete_subnet(self, subnet_name):
         logger.debug('delete_subnet')
-        try:
-            result = self.session.delete('subnets', subnet_name)
-            logger.info('Deleted ' + subnet_name)
-            return result
-        except AuthorizationError as error:
-            logger.error(error)
-            raise error
-        except ConnectionError as error:
-            logger.error(error)
-            raise error
+        result = self.session.delete('subnets', subnet_name)
+        logger.info('Deleted ' + subnet_name)
+        return result
 
 
 def convert_to_drb(subnet_model):
     logger.debug('convert_to_drb')
     address = subnet_model.address + '/' + str(
         IPAddress(subnet_model.netmask).netmask_bits())
+    print subnet_model.range
     drb_object = {
         "ActiveEnd": subnet_model.range.split(' ')[1],
         "ActiveLeaseTime": subnet_model.default_lease,
@@ -161,7 +135,7 @@ def convert_to_client(drb_object):
         'type': drb_object.get('Description')
     }
     logger.info('Converted drb to client')
-    subnet_model = SubnetModel(subnet_model_dict)
+    subnet_model = SubnetModel(**subnet_model_dict)
     logger.info(subnet_model)
     return subnet_model
 

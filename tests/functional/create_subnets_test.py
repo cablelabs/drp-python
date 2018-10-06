@@ -14,9 +14,11 @@
 
 import unittest
 
-from drb_python.subnet import Subnet
+from drb_python.subnet import Subnet, get_all_subnets
 from drb_python.network_layer.http_session import HttpSession
-from drb_python.exceptions.drb_exceptions import NotFoundError
+from drb_python.exceptions.drb_exceptions import NotFoundError, \
+    AlreadyExistsError
+from drb_python.model_layer.subnet_config_model import SubnetModel
 import logging
 from uuid import uuid4
 
@@ -28,9 +30,33 @@ logging.basicConfig(
 
 logger = logging.getLogger('drb-python')
 
+# TODO: Replace this with some kinda of inject for address and such
+login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}
+subnet_object = {
+    'address': '10.197.111.0',
+    'broadcast_address': '10.197.111.255',
+    'default_lease': 7200,
+    'dn': 'cablelabs.com',
+    'dns': '8.8.8.8',
+    'listen_iface': 'eno1',
+    'max_lease': 7200,
+    'name': 'subnet2f7bf533-97fc-49b5-8113-6f02ca00d5d9',
+    'netmask': '255.255.255.0',
+    'range': '10.197.111.12 10.197.111.16',
+    'router': '10.197.111.1',
+    'type': 'management'
+}
 
 
 class SubnetTest(unittest.TestCase):
+
+    def setUp(self):
+        self.session = HttpSession('https://10.197.113.130:8092',
+                                   login['username'],
+                                   login['password'])
+
+        self.subnet_config = SubnetModel(**subnet_object)
+        self.subnet = Subnet(self.session, self.subnet_config)
 
     def tearDown(self):
         if self.subnet is not None:
@@ -38,63 +64,56 @@ class SubnetTest(unittest.TestCase):
 
     """
     Tests for functions located in SubnetHttps
+    1. Create it if it doesn't exist
+    2. Verify the subnet_model equals the subnet_config
+    3. Update the subnet
+    4. Verify the update matches the subnet_config
+    5. Get all subnets
+    6. Validate the count
+    7. Delete the subnet
+    8. Validate it was deleted
     """
 
-    def test_create_subnet(self):
-        login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}
-        subnet_object = {
-            'address': '10.197.111.0',
-            'broadcast_address': '10.197.111.255',
-            'default_lease': 7200,
-            'dn': 'cablelabs.com',
-            'dns': '8.8.8.8',
-            'listen_iface': 'eno1',
-            'max_lease': 7200,
-            'name': 'subnet' + str(uuid4()),
-            'netmask': '255.255.255.0',
-            'range': '10.197.111.12 10.197.111.16',
-            'router': '10.197.111.1',
-            'type': 'management'
-        }
-
-        subnet_object2 = {
-            'address': '10.197.111.0',
-            'broadcast_address': '10.197.111.255',
-            'default_lease': 7600,
-            'dn': 'cablelabs.com',
-            'dns': '8.8.8.8',
-            'listen_iface': 'eno1',
-            'max_lease': 7600,
-            'name': subnet_object['name'],
-            'netmask': '255.255.255.0',
-            'range': '10.197.111.12 10.197.111.17',
-            'router': '10.197.111.1',
-            'type': 'management'
-        }
-
-        session = HttpSession('https://10.197.113.130:8092', login['username'],
-                              login['password'])
-
-        self.subnet = Subnet(session, **subnet_object)
-        self.subnet.create()
-        self.subnet.fetch()
+    def test_basic_create_subnet_flow(self):
+        if not self.subnet.is_valid():
+            self.subnet.create()
         temp = self.subnet.get()
+        self.assertEqual(self.subnet_config.address, temp.address)
 
-        self.assertEqual(subnet_object, temp)
+        self.subnet_config.default_lease = 8000
+        self.subnet_config.max_lease = 8000
+        self.subnet_config.range = '10.197.111.10 10.197.111.20'
 
-        temp = self.subnet.get_all()
+        self.subnet.update(self.subnet_config)
+
+        temp = self.subnet.get()
+        self.assertEqual(self.subnet_config.range, temp.range)
+        self.assertEqual(self.subnet_config.max_lease, temp.max_lease)
+        self.assertEqual(self.subnet_config.default_lease, temp.default_lease)
+
+        temp = get_all_subnets(self.session)
         self.assertEqual(len(temp), 1)
 
-        self.subnet.update(**subnet_object2)
-
-        temp = self.subnet.get()
-        self.assertEqual(subnet_object2, temp)
-
         self.subnet.delete()
+        self.assertFalse(self.subnet.is_valid())
+
+        temp = get_all_subnets(self.session)
+        self.assertEqual(len(temp), 0)
 
         try:
-            self.subnet.fetch()
+            self.subnet.get()
             self.fail('Resource should be deleted')
         except NotFoundError:
             self.assertTrue(True)
+
+    def test_create_existing_subnet_flow(self):
+        self.subnet.create()
+        self.assertTrue(self.subnet.is_valid())
+        try:
+            self.subnet.create()
+            self.fail('Should throw already exists error')
+        except AlreadyExistsError as error:
+            print error
+
+
 
