@@ -44,6 +44,7 @@ class AlreadyExistsError(DrbError):
     def __init__(self, key, message):
         DrbError.__init__(self, key, message)
 
+
 class NotFoundError(DrbError):
     """Exception raised when a resource doesn't exist errors.
     Attributes:

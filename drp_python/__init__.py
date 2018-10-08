@@ -13,5 +13,4 @@
 # limitations under the License.
 
 
-
-name='drp_python'
+name = 'drp_python'

@@ -40,6 +40,3 @@ class SubnetModel(BaseModel):
         self.options = subnet_object.get('options')
         self.pickers = subnet_object.get('pickers')
         self.strategy = subnet_object.get('strategy')
-
-
-

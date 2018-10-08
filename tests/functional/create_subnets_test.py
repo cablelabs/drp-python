@@ -114,6 +114,3 @@ class SubnetTest(unittest.TestCase):
             self.fail('Should throw already exists error')
         except AlreadyExistsError as error:
             print error
-
-
-

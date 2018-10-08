@@ -134,7 +134,6 @@ class MachinesHttp(ApiHttp):
               max-lease-time 7200;
               deny unknown-clients;
               }
-        :return: 
         """
         self.drb_obj = {
             "Address": self.client_obj['address'],
@@ -154,7 +153,7 @@ class MachinesHttp(ApiHttp):
 
     def convert_to_client(self):
         """
-        
+            Converts DRP format to SubnetModel
         """
         self.client_obj = {
             'address': self.drb_obj['address'],

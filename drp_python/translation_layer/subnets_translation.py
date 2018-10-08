@@ -132,8 +132,8 @@ def convert_to_client(drb_object):
         'max_lease': drb_object.get('ReservedLeaseTime'),
         'name': drb_object.get('Name'),
         'netmask': netmask,
-        'range': drb_object.get('ActiveStart') + ' ' +
-                 drb_object.get('ActiveEnd'),
+        'range': drb_object.get('ActiveStart') + ' ' + drb_object.get(
+            'ActiveEnd'),
         'router': drb_object.get('Options')[3].get('Value'),
         'type': drb_object.get('Description'),
 
