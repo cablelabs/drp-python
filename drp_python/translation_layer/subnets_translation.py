@@ -77,6 +77,7 @@ def convert_to_drb(subnet_model):
         "Pickers": [
             "hint"
         ],
+        "Strategy": "MAC",
         "Proxy": False,
         "ReservedLeaseTime": subnet_model.default_lease,
         "Subnet": address,

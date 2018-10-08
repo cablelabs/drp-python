@@ -66,7 +66,7 @@ class HttpSessionTest(unittest.TestCase):
             'range': '10.197.111.12 10.197.111.26',
             'router': '10.197.111.2',
             'type': 'management'
-        }  
+        }
         self.subnet_config_model = SubnetConfigModel(**subnet_object)
         self.subnet_config_model2 = SubnetConfigModel(**subnet_object2)
 
@@ -166,14 +166,15 @@ class HttpSessionTest(unittest.TestCase):
         self.assertEqual(model.available, True)
         self.assertEqual(model.errors, [])
         self.assertEqual(model.validated, True)
-        self.assertEqual(model.options, [{u'Code': 6, u'Value': u'8.8.8.8'},
-                                         {u'Code': 15,
-                                          u'Value': u'cablelabs.com'},
-                                         {u'Code': 1,
-                                          u'Value': u'255.255.255.0'},
-                                         {u'Code': 3,
-                                          u'Value': u'10.197.111.2'},
-                                         {u'Code': 28,
-                                          u'Value': u'10.197.111.255'}])
+        self.assertEqual(model.options, [
+            {'Code': 6, 'Description': 'Domain Name Server',
+             'Value': '8.8.8.8'},
+            {'Code': 15, 'Description': 'Domain Name',
+             'Value': 'cablelabs.com'},
+            {'Code': 1, 'Description': 'Network Mask',
+             'Value': '255.255.255.0'},
+            {'Code': 3, 'Description': 'Router', 'Value': '10.197.111.2'},
+            {'Code': 28, 'Description': 'Broadcast Address',
+             'Value': '10.197.111.255'}])
         self.assertEqual(model.pickers, ['hint'])
         self.assertEqual(model.strategy, 'MAC')

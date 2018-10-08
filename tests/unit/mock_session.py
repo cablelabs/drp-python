@@ -64,6 +64,6 @@ class MockHttpSession:
         mock_drp['Available'] = True
         mock_drp['Validated'] = True
         mock_drp['Errors'] = []
-        4
+
 
         return mock_drp

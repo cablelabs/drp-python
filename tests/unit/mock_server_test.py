@@ -8,6 +8,7 @@ import requests
 class TestMockServer(unittest.TestCase):
     @classmethod
     def setup_class(cls):
+        print 'wtf'
         # Configure mock server.
         cls.mock_server_port = get_free_port()
         cls.mock_server = HTTPServer(('localhost', cls.mock_server_port),
