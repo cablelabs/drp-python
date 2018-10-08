@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class DrbError(Exception):
     """Base class for drb-exceptions in this module."""
+
     def __init__(self, expression, message):
         self.expression = expression
         self.message = message
@@ -28,5 +30,26 @@ class ActionError(DrbError):
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, action, message):
         DrbError.__init__(self, action, message)
+
+
+class AlreadyExistsError(DrbError):
+    """Exception raised trying to create an existing resource.
+       Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, key, message):
+        DrbError.__init__(self, key, message)
+
+
+class NotFoundError(DrbError):
+    """Exception raised when a resource doesn't exist errors.
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, key, message):
+        DrbError.__init__(self, key, message)

@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class Error(Exception):
     """Base class for drb-exceptions in this module."""
+
     def __init__(self, expression, message, status, body):
         self.expression = expression
         self.message = message
@@ -21,7 +23,8 @@ class Error(Exception):
         self.body = body
 
     def __str__(self):
-        return 'Status: ' + str(self.status) + ' ' + self.message + '\n' + self.body
+        return 'Status: ' + str(
+            self.status) + ' ' + self.message + '\n' + self.body
 
 
 class AuthorizationError(Error):
@@ -30,6 +33,7 @@ class AuthorizationError(Error):
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, expression, message, status, body):
         Error.__init__(self, expression, message, status, body)
 
@@ -40,6 +44,6 @@ class ConnectionError(Error):
         expression -- url in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, expression, message, status, body):
         Error.__init__(self, expression, message, status, body)
-

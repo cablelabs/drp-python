@@ -1,6 +1,9 @@
-certifi==2018.8.24
-chardet==3.0.4
-enum==0.4.7
-idna==2.7
-requests==2.19.1
-urllib3==1.23
+certifi>=2018.8.24
+chardet>=3.0.4
+enum>=0.4.7
+idna>=2.7
+requests>=2.19.1
+urllib3>=1.23
+netaddr>=0.7.19
+http>=0.2
+
