@@ -15,7 +15,7 @@
 import unittest
 
 from drp_python.network_layer.http_session import HttpSession
-from mock_server_test import TestMockServer
+from mock_server import MockServerRequestHandler
 import logging
 
 logging.basicConfig(
@@ -30,9 +30,9 @@ logger = logging.getLogger('drp-python')
 class HttpSessionTest(unittest.TestCase):
 
     def setUp(self):
-        self.mockServer = TestMockServer.setup_class()
+        self.mockServer = MockServerRequestHandler.setup_class()
         self.session = HttpSession('http://127.0.0.1:' +
-                                   str(TestMockServer.mock_server_port),
+                                   str(MockServerRequestHandler.mock_server_port),
                                    'username',
                                    'password')
 

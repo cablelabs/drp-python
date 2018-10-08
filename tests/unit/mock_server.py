@@ -19,9 +19,25 @@ import json
 
 # Third-party imports...
 import requests
+from threading import Thread
+from BaseHTTPServer import HTTPServer
 
 
 class MockServerRequestHandler(BaseHTTPRequestHandler):
+
+    @classmethod
+    def setup_class(cls):
+        # Configure mock server.
+        cls.mock_server_port = get_free_port()
+        cls.mock_server = HTTPServer(('localhost', cls.mock_server_port),
+                                     MockServerRequestHandler)
+
+        # Start running mock server in a separate thread.
+        # Daemon threads automatically shut down when the main process exits.
+        cls.mock_server_thread = Thread(target=cls.mock_server.serve_forever)
+        cls.mock_server_thread.setDaemon(True)
+        cls.mock_server_thread.start()
+
     def do_GET(self):
         # Process GET request, return a response with an HTTP 200
         # status.
@@ -55,7 +71,6 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(post_body)
         return True
-
 
     def do_DELETE(self):
         data = {'Deleted': '123'}
