@@ -13,13 +13,13 @@
 # # limitations under the License.
 #
 # from api_http import ApiHttp
-# <<<<<<< HEAD:drb_python/reservations_http.py
+# <<<<<<< HEAD:drp_python/reservations_http.py
 # from http_exceptions import AuthorizationError, ConnectionError
 # from drb_exceptions import ActionError
 # =======
 # from exceptions.http_exceptions import AuthorizationError, ConnectionError
 # from exceptions.drb_exceptions import  ActionError
-# >>>>>>> issue-4:drb_python/translation_layer/reservations_http.py
+# >>>>>>> issue-4:drp_python/translation_layer/reservations_http.py
 #
 #
 # class ReservationsHttp(ApiHttp):

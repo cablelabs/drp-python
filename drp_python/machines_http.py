@@ -13,11 +13,11 @@
 # limitations under the License.
 
 from api_http import ApiHttp
-from drb_python.exceptions.http_exceptions import AuthorizationError, ConnectionError
-from netaddr import IPAddress, IPNetwork
+from drp_python.http_exceptions import AuthorizationError, \
+    ConnectionError
 import logging
 
-logger = logging.getLogger('drb-python')
+logger = logging.getLogger('drp-python')
 
 
 class MachinesHttp(ApiHttp):
@@ -154,7 +154,7 @@ class MachinesHttp(ApiHttp):
 
     def convert_to_client(self):
         """
-        
+
         """
         self.client_obj = {
             'address': self.drb_obj['address'],

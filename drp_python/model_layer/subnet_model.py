@@ -31,3 +31,15 @@ class SubnetModel(BaseModel):
         self.router = subnet_object.get('router')
         self.type = subnet_object.get('type')
         self.extension = subnet_object.get('extension', {})
+
+        # DRP State
+        self.available = subnet_object.get('available')
+        self.errors = subnet_object.get('errors')
+        self.read_only = subnet_object.get('read_only')
+        self.validated = subnet_object.get('validated')
+        self.options = subnet_object.get('options')
+        self.pickers = subnet_object.get('pickers')
+        self.strategy = subnet_object.get('strategy')
+
+
+

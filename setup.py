@@ -12,10 +12,10 @@ def license():
 
 
 setup(
-    name='drb_python',
+    name='drp_python',
     version='0.1',
-    packages=['drb_python'],
-    url='https://github.com/cablelabs/drb_python',
+    packages=['drp_python'],
+    url='https://github.com/cablelabs/drp_python',
     license='Apache 2.0',
     author='Dan Schrimpsher',
     author_email='d.schrimpsher@cablelabs.com',

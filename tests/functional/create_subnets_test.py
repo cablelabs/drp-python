@@ -14,11 +14,11 @@
 
 import unittest
 
-from drb_python.subnet import Subnet, get_all_subnets
-from drb_python.network_layer.http_session import HttpSession
-from drb_python.exceptions.drb_exceptions import NotFoundError, \
+from drp_python.subnet import Subnet, get_all_subnets
+from drp_python.network_layer.http_session import HttpSession
+from drp_python.exceptions.drb_exceptions import NotFoundError, \
     AlreadyExistsError
-from drb_python.model_layer.subnet_config_model import SubnetModel
+from drp_python.model_layer.subnet_config_model import SubnetConfigModel
 import logging
 from uuid import uuid4
 
@@ -28,7 +28,7 @@ logging.basicConfig(
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO)
 
-logger = logging.getLogger('drb-python')
+logger = logging.getLogger('drp-python')
 
 # TODO: Replace this with some kinda of inject for address and such
 login = {'username': 'rocketskates', 'password': 'r0cketsk8ts'}
@@ -55,7 +55,7 @@ class SubnetTest(unittest.TestCase):
                                    login['username'],
                                    login['password'])
 
-        self.subnet_config = SubnetModel(**subnet_object)
+        self.subnet_config = SubnetConfigModel(**subnet_object)
         self.subnet = Subnet(self.session, self.subnet_config)
 
     def tearDown(self):

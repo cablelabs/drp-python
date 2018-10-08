@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from drb_python.exceptions.http_exceptions import AuthorizationError, \
+from drp_python.exceptions.http_exceptions import AuthorizationError, \
     ConnectionError
-from drb_python.exceptions.drb_exceptions import NotFoundError, AlreadyExistsError
-from drb_python.translation_layer.subnets_http import SubnetsHttp, \
+from drp_python.exceptions.drb_exceptions import NotFoundError, AlreadyExistsError
+from drp_python.translation_layer.subnets_translation import SubnetTranslation, \
     get_all_subnets
 import logging
 
-logger = logging.getLogger('drb-python')
+logger = logging.getLogger('drp-python')
 
 
 class Subnet:
@@ -29,7 +29,7 @@ class Subnet:
     def __init__(self, session, client_subnet):
         logger.debug('__init__')
         self.__subnet_config = client_subnet
-        self.__api = SubnetsHttp(session)
+        self.__api = SubnetTranslation(session)
         self.__api.open()
         try:
             self.__subnet_model = self.get()

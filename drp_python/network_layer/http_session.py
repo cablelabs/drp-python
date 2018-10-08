@@ -17,14 +17,14 @@ import requests
 import urllib3
 import logging
 
-from drb_python.exceptions.http_exceptions import AuthorizationError, \
+from drp_python.exceptions.http_exceptions import AuthorizationError, \
     ConnectionError
-from drb_python.exceptions.drb_exceptions import AlreadyExistsError, \
+from drp_python.exceptions.drb_exceptions import AlreadyExistsError, \
     NotFoundError
 
 
 urllib3.disable_warnings()
-logger = logging.getLogger('drb-python')
+logger = logging.getLogger('drp-python')
 
 
 class HttpSession:

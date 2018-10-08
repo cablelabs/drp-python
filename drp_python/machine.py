@@ -23,7 +23,7 @@
 # from exceptions.drb_exceptions import AlreadyExistsError
 # import logging
 #
-# logger = logging.getLogger('drb-python')
+# logger = logging.getLogger('drp-python')
 #
 #
 # def create_machine(session, client_machine):

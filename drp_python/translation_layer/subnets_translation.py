@@ -13,22 +13,23 @@
 # limitations under the License.
 
 from api_http import ApiHttp
-from drb_python.model_layer.subnet_config_model import SubnetModel
-from drb_python.exceptions.http_exceptions import AuthorizationError, \
+from drp_python.model_layer.subnet_config_model import SubnetConfigModel
+from drp_python.model_layer.subnet_model import SubnetModel
+from drp_python.exceptions.http_exceptions import AuthorizationError, \
     ConnectionError
 from netaddr import IPAddress, IPNetwork
 import logging
 
-logger = logging.getLogger('drb-python')
+logger = logging.getLogger('drp-python')
 
 
-class SubnetsHttp(ApiHttp):
+class SubnetTranslation(ApiHttp):
     """
      All HTTP based API Calls related to Subnets
     """
 
     def __init__(self, session):
-        super(SubnetsHttp, self).__init__(session)
+        super(SubnetTranslation, self).__init__(session)
         logger.debug('__init__')
 
     def get_subnet(self, subnet_name):
@@ -57,7 +58,7 @@ class SubnetsHttp(ApiHttp):
         logger.debug('delete_subnet')
         result = self.session.delete('subnets', subnet_name)
         logger.info('Deleted ' + subnet_name)
-        return result
+        return
 
 
 def convert_to_drb(subnet_model):
@@ -115,6 +116,7 @@ def convert_to_drb(subnet_model):
 
 
 def convert_to_client(drb_object):
+    logger.warn(drb_object)
     ip = IPNetwork(str(drb_object.get('Subnet')))
     address = str(ip.ip)
     netmask = str(ip.netmask)
@@ -132,7 +134,14 @@ def convert_to_client(drb_object):
         'range': drb_object.get('ActiveStart') + ' ' +
                  drb_object.get('ActiveEnd'),
         'router': drb_object.get('Options')[3].get('Value'),
-        'type': drb_object.get('Description')
+        'type': drb_object.get('Description'),
+
+        'available': drb_object.get('Available'),
+        'errors': drb_object.get('Errors'),
+        'validated': drb_object.get('Validated'),
+        'options': drb_object.get('Options'),
+        'pickers': drb_object.get('Pickers'),
+        'strategy': drb_object.get('Strategy'),
     }
     logger.info('Converted drb to client')
     subnet_model = SubnetModel(**subnet_model_dict)

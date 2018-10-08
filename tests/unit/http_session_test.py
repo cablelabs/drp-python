@@ -14,7 +14,7 @@
 
 import unittest
 
-from drb_python.network_layer.http_session import HttpSession
+from drp_python.network_layer.http_session import HttpSession
 from mock_server_test import TestMockServer
 import logging
 
@@ -24,7 +24,7 @@ logging.basicConfig(
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO)
 
-logger = logging.getLogger('drb-python')
+logger = logging.getLogger('drp-python')
 
 
 class HttpSessionTest(unittest.TestCase):
