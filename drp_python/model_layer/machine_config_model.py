@@ -45,6 +45,6 @@ class MachineConfigModel(BaseModel):
         self.name = machine_object.get('name')
         self.type = machine_object.get('type')
         self.os = machine_object.get('os')
-        self.uuid = uuid4()
+        self.uuid = machine_object.get('uuid')
         self.workflow = machine_object.get('workflow')
         self.extension = machine_object.get('extension', {})

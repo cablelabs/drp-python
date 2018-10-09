@@ -15,6 +15,7 @@
 from api_http import ApiHttp
 from drp_python.exceptions.http_exceptions import AuthorizationError, \
     ConnectionError
+from drp_python.exceptions.drb_exceptions import NotFoundError
 from drp_python.model_layer.machine_model import MachineModel
 import logging
 
@@ -28,59 +29,68 @@ class MachineTranslation(ApiHttp):
 
     def __init__(self, session):
         super(MachineTranslation, self).__init__(session)
-        logger.debug('__init__')
+        logger.warning('__init__')
 
     def get_machine(self, machine_uuid):
-        logger.debug('get_machine')
+        logger.warning('get_machine')
         drp_obj = self.session.get('machines', machine_uuid)
         machine_model = convert_to_client(drp_obj)
         return machine_model
 
+    def get_machine_by_name(self, machine_name):
+        logger.debug('get_machine_by_name')
+        drp_obj = self.session.get('machines?Name=' + machine_name)
+        if len(drp_obj) > 0:
+            drp_obj = drp_obj[0]
+            machine_model = convert_to_client(drp_obj)
+            return machine_model
+        else:
+            raise NotFoundError('Test', 'Test')
+
     def create_machine(self, machine_config_model):
-        logger.debug('create_machine')
+        logger.warning('create_machine')
         drp_object = convert_to_drp(machine_config_model)
         drp_object = self.session.post('machines', drp_object)
         machine_model = convert_to_client(drp_object)
-        logger.info('Created ' + machine_model.name)
+        logger.warning('Created ' + machine_model.name)
         return machine_model
 
     def update_machine(self, machine_config_model, machine_uuid):
-        logger.debug('update_machine')
+        logger.warning('update_machine')
         drp_object = convert_to_drp(machine_config_model)
         drp_object = self.session.put('machines', drp_object, machine_uuid)
         machine_model = convert_to_client(drp_object)
-        logger.info('Updated ' + machine_uuid)
+        logger.warning('Updated ' + machine_uuid)
         return machine_model
 
     def delete_machine(self, machine_uuid):
-        logger.debug('delete_machine')
+        logger.warning('delete_machine')
         result = self.session.delete('machines', machine_uuid)
-        logger.info('Deleted ' + machine_uuid)
+        logger.warning('Deleted ' + machine_uuid)
         return
 
 
 def convert_to_drp(machine_model):
-    logger.debug('convert_to_drp')
+    logger.warning('convert_to_drp')
     drp_object = {
         "Address": machine_model.ip,
         "Description": machine_model.type,
-        "HardwareAddresses": [
+        "HardwareAddrs": [
             machine_model.mac
         ],
         "Name": machine_model.name,
         "OS": machine_model.os,
         "Runnable": True,
-        "Uuid": machine_model.uuid,
         "Workflow": machine_model.workflow
     }
-    logger.info('Converted client to drp')
-    logger.info(drp_object)
+    logger.warning('Converted client to drp')
+    logger.warning(drp_object)
     return drp_object
 
 
 def convert_to_client(drp_object):
-    logger.debug(drp_object)
-    mac = drp_object.get('HardwareAddresses')
+    logger.warning(drp_object)
+    mac = drp_object.get('HardwareAddrs')
     if mac is not None:
         mac = mac[0]
     machine_model_dict = {
@@ -97,17 +107,17 @@ def convert_to_client(drp_object):
         'read_only': drp_object.get('ReadOnly'),
         'validated': drp_object.get('Validated'),
     }
-    logger.debug('Converted drp to client')
+    logger.warning('Converted drp to client')
     machine_model = MachineModel(**machine_model_dict)
-    logger.debug(machine_model)
+    logger.warning(machine_model)
     return machine_model
 
 
 def get_all_machines(session):
-    logger.debug('get_all_machines')
+    logger.warning('get_all_machines')
     try:
         result = session.get('machines')
-        logger.info('Fetched all machines')
+        logger.warning('Fetched all machines')
         return result
     except AuthorizationError as error:
         logger.error(error)
