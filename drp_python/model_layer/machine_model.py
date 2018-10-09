@@ -13,29 +13,7 @@
 # limitations under the License.
 
 from base_model import BaseModel
-from uuid import uuid4
 
-
-# {
-#   "Address": "string",
-#   "BootEnv": "string",
-#   "CurrentJob": "string",
-#   "CurrentTask": 0,
-#   "Description": "string",
-#   "HardwareAddrs": [
-#     "string"
-#   ],
-#   "Name": "string",
-#   "OS": "string",
-#   "Runnable": true,
-#   "Secret": "string",
-#   "Stage": "string",
-#   "Tasks": [
-#     "string"
-#   ],
-#   "Uuid": "string",
-#   "Workflow": "string"
-# }
 
 class MachineModel(BaseModel):
     def __init__(self, **machine_object):
@@ -48,8 +26,6 @@ class MachineModel(BaseModel):
         self.uuid = machine_object.get('uuid')
         self.workflow = machine_object.get('workflow')
         self.extension = machine_object.get('extension', {})
-
-        #drp state
         self.available = machine_object.get('available')
         self.errors = machine_object.get('errors')
         self.read_only = machine_object.get('read_only')

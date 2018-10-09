@@ -28,7 +28,6 @@ class MockHttpSession:
         self.url = url
         self.token = ''
         self.verify_cert = verify_cert
-        
         self.mock_drp = None
 
     def authorize(self):
@@ -39,7 +38,7 @@ class MockHttpSession:
 
     def get(self, resource, key=None):
         if self.mock_drp is None:
-            raise  NotFoundError(key, 'Does not exist')
+            raise NotFoundError(key, 'Does not exist')
         return self.mock_drp
 
     def post(self, resource, body):
