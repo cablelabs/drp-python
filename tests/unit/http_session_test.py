@@ -22,7 +22,7 @@ logging.basicConfig(
     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] '
            '%(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
-    level=logging.INFO)
+    level=logging.WARNING)
 
 logger = logging.getLogger('drp-python')
 

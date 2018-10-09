@@ -25,12 +25,12 @@ logging.basicConfig(
     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] '
            '%(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
-    level=logging.INFO)
+    level=logging.WARNING)
 
 logger = logging.getLogger('drp-python')
 
 
-class HttpSessionTest(unittest.TestCase):
+class SubnetTranslationTest(unittest.TestCase):
 
     def setUp(self):
         self.session = MockHttpSession('http://127.0.0.1:' +
@@ -73,40 +73,6 @@ class HttpSessionTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_get_subnet(self):
-        model = self.subnet_translation.get_subnet(
-            self.subnet_config_model.name)
-        self.assertEqual(model.name, self.subnet_config_model.name)
-        self.assertEqual(model.address, self.subnet_config_model.address)
-        self.assertEqual(model.broadcast_address,
-                         self.subnet_config_model.broadcast_address)
-        self.assertEqual(model.default_lease,
-                         self.subnet_config_model.default_lease)
-        self.assertEqual(model.dn, self.subnet_config_model.dn)
-        self.assertEqual(model.dns, self.subnet_config_model.dns)
-        self.assertEqual(model.listen_iface,
-                         self.subnet_config_model.listen_iface)
-        self.assertEqual(model.max_lease, self.subnet_config_model.max_lease)
-        self.assertEqual(model.netmask, self.subnet_config_model.netmask)
-        self.assertEqual(model.range, self.subnet_config_model.range)
-        self.assertEqual(model.router, self.subnet_config_model.router)
-        self.assertEqual(model.type, self.subnet_config_model.type)
-        self.assertEquals(model.extension, {})
-        self.assertEqual(model.available, True)
-        self.assertEqual(model.errors, [])
-        self.assertEqual(model.validated, True)
-        self.assertEqual(model.options, [{u'Code': 6, u'Value': u'8.8.8.8'},
-                                         {u'Code': 15,
-                                          u'Value': u'cablelabs.com'},
-                                         {u'Code': 1,
-                                          u'Value': u'255.255.255.0'},
-                                         {u'Code': 3,
-                                          u'Value': u'10.197.111.1'},
-                                         {u'Code': 28,
-                                          u'Value': u'10.197.111.255'}])
-        self.assertEqual(model.pickers, ['hint'])
-        self.assertEqual(model.strategy, 'MAC')
-
     def test_create_subnet(self):
         model = self.subnet_translation.create_subnet(self.subnet_config_model)
         self.assertEqual(model.name, self.subnet_config_model.name)
@@ -128,21 +94,50 @@ class HttpSessionTest(unittest.TestCase):
         self.assertEqual(model.available, True)
         self.assertEqual(model.errors, [])
         self.assertEqual(model.validated, True)
-        self.assertEqual(model.options, [{u'Code': 6, u'Value': u'8.8.8.8'},
-                                         {u'Code': 15,
-                                          u'Value': u'cablelabs.com'},
-                                         {u'Code': 1,
-                                          u'Value': u'255.255.255.0'},
-                                         {u'Code': 3,
-                                          u'Value': u'10.197.111.1'},
-                                         {u'Code': 28,
-                                          u'Value': u'10.197.111.255'}])
+        self.assertEqual(model.options, [{'Code': 6, 'Value': '8.8.8.8'},
+                                         {'Code': 15,
+                                          'Value': 'cablelabs.com'},
+                                         {'Code': 1,
+                                          'Value': '255.255.255.0'},
+                                         {'Code': 3,
+                                          'Value': '10.197.111.1'},
+                                         {'Code': 28,
+                                          'Value': '10.197.111.255'}])
         self.assertEqual(model.pickers, ['hint'])
         self.assertEqual(model.strategy, 'MAC')
 
-    def test_delete_subnet(self):
-        self.subnet_translation.delete_subnet(
+        model = self.subnet_translation.get_subnet(
             self.subnet_config_model.name)
+        self.assertEqual(model.name, self.subnet_config_model.name)
+        self.assertEqual(model.address, self.subnet_config_model.address)
+        self.assertEqual(model.broadcast_address,
+                         self.subnet_config_model.broadcast_address)
+        self.assertEqual(model.default_lease,
+                         self.subnet_config_model.default_lease)
+        self.assertEqual(model.dn, self.subnet_config_model.dn)
+        self.assertEqual(model.dns, self.subnet_config_model.dns)
+        self.assertEqual(model.listen_iface,
+                         self.subnet_config_model.listen_iface)
+        self.assertEqual(model.max_lease, self.subnet_config_model.max_lease)
+        self.assertEqual(model.netmask, self.subnet_config_model.netmask)
+        self.assertEqual(model.range, self.subnet_config_model.range)
+        self.assertEqual(model.router, self.subnet_config_model.router)
+        self.assertEqual(model.type, self.subnet_config_model.type)
+        self.assertEquals(model.extension, {})
+        self.assertEqual(model.available, True)
+        self.assertEqual(model.errors, [])
+        self.assertEqual(model.validated, True)
+        self.assertEqual(model.options, [{'Code': 6, 'Value': '8.8.8.8'},
+                                         {'Code': 15,
+                                          'Value': 'cablelabs.com'},
+                                         {'Code': 1,
+                                          'Value': '255.255.255.0'},
+                                         {'Code': 3,
+                                          'Value': '10.197.111.1'},
+                                         {'Code': 28,
+                                          'Value': '10.197.111.255'}])
+        self.assertEqual(model.pickers, ['hint'])
+        self.assertEqual(model.strategy, 'MAC')
 
     def test_update_subnet(self):
         model = self.subnet_translation.update_subnet(
@@ -167,14 +162,18 @@ class HttpSessionTest(unittest.TestCase):
         self.assertEqual(model.errors, [])
         self.assertEqual(model.validated, True)
         self.assertEqual(model.options, [
-            {'Code': 6, 'Description': 'Domain Name Server',
+            {'Code': 6,
              'Value': '8.8.8.8'},
-            {'Code': 15, 'Description': 'Domain Name',
+            {'Code': 15,
              'Value': 'cablelabs.com'},
-            {'Code': 1, 'Description': 'Network Mask',
+            {'Code': 1,
              'Value': '255.255.255.0'},
-            {'Code': 3, 'Description': 'Router', 'Value': '10.197.111.2'},
-            {'Code': 28, 'Description': 'Broadcast Address',
+            {'Code': 3, 'Value': '10.197.111.2'},
+            {'Code': 28,
              'Value': '10.197.111.255'}])
         self.assertEqual(model.pickers, ['hint'])
         self.assertEqual(model.strategy, 'MAC')
+
+    def test_delete_subnet(self):
+        self.subnet_translation.delete_subnet(
+            self.subnet_config_model.name)
