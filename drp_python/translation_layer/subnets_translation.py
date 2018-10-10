@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from api_http import ApiHttp
-from drp_python.model_layer.subnet_config_model import SubnetConfigModel
 from drp_python.model_layer.subnet_model import SubnetModel
 from drp_python.exceptions.http_exceptions import AuthorizationError, \
     ConnectionError
@@ -34,23 +33,23 @@ class SubnetTranslation(ApiHttp):
 
     def get_subnet(self, subnet_name):
         logger.debug('get_subnet')
-        drb_obj = self.session.get('subnets', subnet_name)
-        subnet_model = convert_to_client(drb_obj)
+        drp_obj = self.session.get('subnets', subnet_name)
+        subnet_model = convert_to_client(drp_obj)
         return subnet_model
 
     def create_subnet(self, subnet_config_model):
         logger.debug('create_subnet')
-        drb_object = convert_to_drb(subnet_config_model)
-        drb_object = self.session.post('subnets', drb_object)
-        subnet_model = convert_to_client(drb_object)
+        drp_object = convert_to_drp(subnet_config_model)
+        drp_object = self.session.post('subnets', drp_object)
+        subnet_model = convert_to_client(drp_object)
         logger.info('Created ' + subnet_model.name)
         return subnet_model
 
     def update_subnet(self, subnet_config_model, subnet_name):
         logger.debug('update_subnet')
-        drb_object = convert_to_drb(subnet_config_model)
-        drb_object = self.session.put('subnets', drb_object, subnet_name)
-        subnet_model = convert_to_client(drb_object)
+        drp_object = convert_to_drp(subnet_config_model)
+        drp_object = self.session.put('subnets', drp_object, subnet_name)
+        subnet_model = convert_to_client(drp_object)
         logger.info('Updated ' + subnet_name)
         return subnet_model
 
@@ -61,12 +60,12 @@ class SubnetTranslation(ApiHttp):
         return
 
 
-def convert_to_drb(subnet_model):
-    logger.debug('convert_to_drb')
+def convert_to_drp(subnet_model):
+    logger.debug('convert_to_drp')
     address = subnet_model.address + '/' + str(
         IPAddress(subnet_model.netmask).netmask_bits())
     print subnet_model.range
-    drb_object = {
+    drp_object = {
         "ActiveEnd": subnet_model.range.split(' ')[1],
         "ActiveLeaseTime": subnet_model.default_lease,
         "ActiveStart": subnet_model.range.split(' ')[0],
@@ -85,66 +84,62 @@ def convert_to_drb(subnet_model):
         "Options": [
             {
                 "Code": 6,
-                "Value": subnet_model.dns,
-                'Description': 'Domain Name Server'
+                "Value": subnet_model.dns
             },
             {
                 "Code": 15,
-                "Value": subnet_model.dn,
-                'Description': 'Domain Name'
+                "Value": subnet_model.dn
             },
             {
                 "Code": 1,
-                "Value": subnet_model.netmask,
-                'Description': 'Network Mask'
+                "Value": subnet_model.netmask
             },
             {
                 "Code": 3,
-                "Value": subnet_model.router,
-                'Description': 'Router'
+                "Value": subnet_model.router
             },
             {
                 "Code": 28,
-                "Value": subnet_model.broadcast_address,
-                'Description': 'Broadcast Address'
+                "Value": subnet_model.broadcast_address
             }
 
         ]
     }
-    logger.info('Converted client to drb')
-    logger.info(drb_object)
-    return drb_object
+    logger.info('Converted client to drp')
+    logger.info(drp_object)
+    return drp_object
 
 
-def convert_to_client(drb_object):
-    logger.warn(drb_object)
-    ip = IPNetwork(str(drb_object.get('Subnet')))
+def convert_to_client(drp_object):
+    logger.warn(drp_object)
+    ip = IPNetwork(str(drp_object.get('Subnet')))
     address = str(ip.ip)
     netmask = str(ip.netmask)
     broadcast = str(ip.broadcast)
     subnet_model_dict = {
         'address': address,
         'broadcast_address': broadcast,
-        'default_lease': drb_object.get('ActiveLeaseTime'),
-        'dn': drb_object.get('Options')[1].get('Value'),
-        'dns': drb_object.get('Options')[0].get('Value'),
+        'default_lease': drp_object.get('ActiveLeaseTime'),
+        'dn': drp_object.get('Options')[1].get('Value'),
+        'dns': drp_object.get('Options')[0].get('Value'),
         'listen_iface': 'eno1',
-        'max_lease': drb_object.get('ReservedLeaseTime'),
-        'name': drb_object.get('Name'),
+        'max_lease': drp_object.get('ReservedLeaseTime'),
+        'name': drp_object.get('Name'),
         'netmask': netmask,
-        'range': drb_object.get('ActiveStart') + ' ' + drb_object.get(
+        'range': drp_object.get('ActiveStart') + ' ' + drp_object.get(
             'ActiveEnd'),
-        'router': drb_object.get('Options')[3].get('Value'),
-        'type': drb_object.get('Description'),
+        'router': drp_object.get('Options')[3].get('Value'),
+        'type': drp_object.get('Description'),
 
-        'available': drb_object.get('Available'),
-        'errors': drb_object.get('Errors'),
-        'validated': drb_object.get('Validated'),
-        'options': drb_object.get('Options'),
-        'pickers': drb_object.get('Pickers'),
-        'strategy': drb_object.get('Strategy'),
+        'available': drp_object.get('Available'),
+        'errors': drp_object.get('Errors'),
+        'validated': drp_object.get('Validated'),
+        'read_only': drp_object.get('ReadOnly'),
+        'options': drp_object.get('Options'),
+        'pickers': drp_object.get('Pickers'),
+        'strategy': drp_object.get('Strategy')
     }
-    logger.info('Converted drb to client')
+    logger.info('Converted drp to client')
     subnet_model = SubnetModel(**subnet_model_dict)
     logger.info(subnet_model)
     return subnet_model

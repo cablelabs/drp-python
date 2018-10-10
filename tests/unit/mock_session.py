@@ -15,25 +15,10 @@
 
 import urllib3
 import logging
-
+from drp_python.exceptions.drb_exceptions import NotFoundError
 
 urllib3.disable_warnings()
 logger = logging.getLogger('drp-python')
-
-mock_drp = {u'Available': True, u'Subnet': u'10.197.111.0/24', u'Errors': [],
-            u'Name': u'TestSubnet',
-            u'Pickers': [u'hint'], u'OnlyReservations': True,
-            u'Strategy': u'MAC', u'ActiveLeaseTime': 7200,
-            u'Documentation': u'', u'Enabled': True,
-            u'Options': [{u'Code': 6, u'Value': u'8.8.8.8'},
-                         {u'Code': 15, u'Value': u'cablelabs.com'},
-                         {u'Code': 1, u'Value': u'255.255.255.0'},
-                         {u'Code': 3, u'Value': u'10.197.111.1'},
-                         {u'Code': 28, u'Value': u'10.197.111.255'}],
-            u'ReservedLeaseTime': 7200, u'ReadOnly': False, u'Meta': {},
-            u'ActiveEnd': u'10.197.111.16', u'Proxy': False,
-            u'NextServer': u'', u'Unmanaged': True, u'Validated': True,
-            u'ActiveStart': u'10.197.111.12', u'Description': u'management'}
 
 
 class MockHttpSession:
@@ -43,6 +28,7 @@ class MockHttpSession:
         self.url = url
         self.token = ''
         self.verify_cert = verify_cert
+        self.mock_drp = None
 
     def authorize(self):
         return
@@ -51,17 +37,25 @@ class MockHttpSession:
         return True
 
     def get(self, resource, key=None):
-        return mock_drp
+        if self.mock_drp is None:
+            raise NotFoundError(key, 'Does not exist')
+        return self.mock_drp
 
     def post(self, resource, body):
-        return mock_drp
+        self.mock_drp = body
+        self.mock_drp['Available'] = True
+        self.mock_drp['Validated'] = True
+        self.mock_drp['Errors'] = []
+        self.mock_drp['ReadOnly'] = True
+        return self.mock_drp
 
     def delete(self, resource, key):
-        return mock_drp
+        return self.mock_drp
 
     def put(self, resource, body, key):
-        mock_drp = body
-        mock_drp['Available'] = True
-        mock_drp['Validated'] = True
-        mock_drp['Errors'] = []
-        return mock_drp
+        self.mock_drp = body
+        self.mock_drp['Available'] = True
+        self.mock_drp['Validated'] = True
+        self.mock_drp['Errors'] = []
+        self.mock_drp['ReadOnly'] = True
+        return self.mock_drp

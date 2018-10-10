@@ -26,7 +26,7 @@ logging.basicConfig(
     format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] '
            '%(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
-    level=logging.INFO)
+    level=logging.WARNING)
 
 logger = logging.getLogger('drp-python')
 
@@ -40,7 +40,7 @@ subnet_object = {
     'dns': '8.8.8.8',
     'listen_iface': 'eno1',
     'max_lease': 7200,
-    'name': 'subnet2f7bf533-97fc-49b5-8113-6f02ca00d5d9',
+    'name': 'subnet-' + str(uuid4()),
     'netmask': '255.255.255.0',
     'range': '10.197.111.12 10.197.111.16',
     'router': '10.197.111.1',
@@ -92,13 +92,13 @@ class SubnetTest(unittest.TestCase):
         self.assertEqual(self.subnet_config.default_lease, temp.default_lease)
 
         temp = get_all_subnets(self.session)
-        self.assertEqual(len(temp), 1)
+        count = len(temp)
 
         self.subnet.delete()
         self.assertFalse(self.subnet.is_valid())
 
         temp = get_all_subnets(self.session)
-        self.assertEqual(len(temp), 0)
+        self.assertEqual(len(temp), count-1)
 
         try:
             self.subnet.get()
