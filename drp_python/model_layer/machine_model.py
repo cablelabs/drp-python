@@ -30,3 +30,4 @@ class MachineModel(BaseModel):
         self.errors = machine_object.get('errors')
         self.read_only = machine_object.get('read_only')
         self.validated = machine_object.get('validated')
+        self.params = machine_object.get('params')

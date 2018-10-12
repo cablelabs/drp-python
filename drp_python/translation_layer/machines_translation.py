@@ -69,6 +69,16 @@ class MachineTranslation(ApiHttp):
         logger.warning('Deleted ' + machine_uuid)
         return
 
+    def add_machine_params(self, params_config_model, machine_uuid):
+        logger.warning('add params to machine')
+        value = params_config_model.value
+        param = params_config_model.name
+        temp = self.session.post('machines/' + machine_uuid +
+                                 '/params/' + param, value)
+        machine_model = self.get_machine(machine_uuid)
+        logger.warning('Updated ' + machine_uuid)
+        return machine_model
+
 
 def convert_to_drp(machine_model):
     logger.warning('convert_to_drp')
@@ -106,6 +116,7 @@ def convert_to_client(drp_object):
         'errors': drp_object.get('Errors'),
         'read_only': drp_object.get('ReadOnly'),
         'validated': drp_object.get('Validated'),
+        'params': drp_object.get('Params')
     }
     logger.warning('Converted drp to client')
     machine_model = MachineModel(**machine_model_dict)

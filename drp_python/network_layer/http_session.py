@@ -83,7 +83,7 @@ class HttpSession:
         logger.debug(body)
         r = requests.post(self.url + '/api/v3/' + actual_resource,
                           headers=headers, json=body, verify=False)
-        if r.status_code == 201:
+        if r.status_code == 201 or r.status_code == 200:
             return r.json()
         else:
             logger.error('Error on Post ' + str(r.status_code))
