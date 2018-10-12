@@ -68,7 +68,6 @@ class Reservation:
         return self.__api.get_reservation(self.__reservation_config.ip)
 
 
-
 def get_all(session):
     """
     Fetches all reservations form DRP

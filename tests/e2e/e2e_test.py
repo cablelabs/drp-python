@@ -156,4 +156,3 @@ class ReservationTest(unittest.TestCase):
         self.assertEqual(model.errors, [])
         self.assertTrue(model.validated)
         self.assertFalse(model.read_only)
-

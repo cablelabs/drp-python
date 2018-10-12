@@ -16,8 +16,6 @@ from base_model import BaseModel
 from uuid import uuid4
 
 
-
-
 # ip: "10.197.111.12"
 # mac: "10:7d:1a:68:0d:2f"
 # name: ADMIN_INTERFACE
@@ -25,7 +23,6 @@ from uuid import uuid4
 # range: "10.197.111.12 10.197.111.16"
 # router: "10.197.111.1"
 # type: management
-
 class ReservationConfigModel(BaseModel):
     def __init__(self, **reservation_object):
         super(ReservationConfigModel, self).__init__(**reservation_object)
