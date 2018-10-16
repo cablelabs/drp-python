@@ -28,52 +28,52 @@ class ParamsTranslation(ApiHttp):
 
     def __init__(self, session):
         super(ParamsTranslation, self).__init__(session)
-        logger.warning('__init__')
+        logger.info('__init__')
 
     def get_params(self, params_name):
-        logger.warning('get_params')
+        logger.info('get_params')
         drp_obj = self.session.get('params', params_name)
         params_model = convert_to_client(drp_obj)
         return params_model
 
     def create_params(self, params_config_model):
-        logger.warning('create_params')
+        logger.info('create_params')
         drp_object = convert_to_drp(params_config_model)
         drp_object = self.session.post('params', drp_object)
         params_model = convert_to_client(drp_object)
-        logger.warning('Created ' + params_model.name)
+        logger.info('Created ' + params_model.name)
         return params_model
 
     def update_params(self, params_config_model, params_name):
-        logger.warning('update_params')
+        logger.info('update_params')
         drp_object = convert_to_drp(params_config_model)
         drp_object = self.session.put('params', drp_object, params_name)
         params_model = convert_to_client(drp_object)
-        logger.warning('Updated ' + params_name)
+        logger.info('Updated ' + params_name)
         return params_model
 
     def delete_params(self, params_name):
-        logger.warning('delete_params')
+        logger.info('delete_params')
         result = self.session.delete('params', params_name)
-        logger.warning('Deleted ' + params_name)
+        logger.info('Deleted ' + params_name)
         return
 
 
 def convert_to_drp(params_model):
-    logger.warning('convert_to_drp')
+    logger.info('convert_to_drp')
     drp_object = {
         "Name": params_model.name,
         "Description": params_model.type,
         "Schema": params_model.schema,
         "Documentation": params_model.description,
     }
-    logger.warning('Converted client to drp')
-    logger.warning(drp_object)
+    logger.info('Converted client to drp')
+    logger.info(drp_object)
     return drp_object
 
 
 def convert_to_client(drp_object):
-    logger.warning(drp_object)
+    logger.info(drp_object)
     params_model_dict = {
         'name': drp_object.get('Name'),
         'schema': drp_object.get('Schema'),
@@ -85,17 +85,17 @@ def convert_to_client(drp_object):
         'read_only': drp_object.get('ReadOnly'),
         'validated': drp_object.get('Validated'),
     }
-    logger.warning('Converted drp to client')
+    logger.info('Converted drp to client')
     params_model = ParamsModel(**params_model_dict)
-    logger.warning(params_model)
+    logger.info(params_model)
     return params_model
 
 
 def get_all_params(session):
-    logger.warning('get_all_params')
+    logger.info('get_all_params')
     try:
         result = session.get('params')
-        logger.warning('Fetched all params')
+        logger.info('Fetched all params')
         return result
     except AuthorizationError as error:
         logger.error(error)

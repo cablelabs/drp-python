@@ -29,10 +29,10 @@ class MachineTranslation(ApiHttp):
 
     def __init__(self, session):
         super(MachineTranslation, self).__init__(session)
-        logger.warning('__init__')
+        logger.info('__init__')
 
     def get_machine(self, machine_uuid):
-        logger.warning('get_machine')
+        logger.info('get_machine')
         drp_obj = self.session.get('machines', machine_uuid)
         machine_model = convert_to_client(drp_obj)
         return machine_model
@@ -48,40 +48,40 @@ class MachineTranslation(ApiHttp):
             raise NotFoundError('Test', 'Test')
 
     def create_machine(self, machine_config_model):
-        logger.warning('create_machine')
+        logger.info('create_machine')
         drp_object = convert_to_drp(machine_config_model)
         drp_object = self.session.post('machines', drp_object)
         machine_model = convert_to_client(drp_object)
-        logger.warning('Created ' + machine_model.name)
+        logger.info('Created ' + machine_model.name)
         return machine_model
 
     def update_machine(self, machine_config_model, machine_uuid):
-        logger.warning('update_machine')
+        logger.info('update_machine')
         drp_object = convert_to_drp(machine_config_model)
         drp_object = self.session.put('machines', drp_object, machine_uuid)
         machine_model = convert_to_client(drp_object)
-        logger.warning('Updated ' + machine_uuid)
+        logger.info('Updated ' + machine_uuid)
         return machine_model
 
     def delete_machine(self, machine_uuid):
-        logger.warning('delete_machine')
+        logger.info('delete_machine')
         result = self.session.delete('machines', machine_uuid)
-        logger.warning('Deleted ' + machine_uuid)
+        logger.info('Deleted ' + machine_uuid)
         return
 
     def add_machine_params(self, params_config_model, machine_uuid):
-        logger.warning('add params to machine')
+        logger.info('add params to machine')
         value = params_config_model.value
         param = params_config_model.name
         temp = self.session.post('machines/' + machine_uuid +
                                  '/params/' + param, value)
         machine_model = self.get_machine(machine_uuid)
-        logger.warning('Updated ' + machine_uuid)
+        logger.info('Updated ' + machine_uuid)
         return machine_model
 
 
 def convert_to_drp(machine_model):
-    logger.warning('convert_to_drp')
+    logger.info('convert_to_drp')
     drp_object = {
         "Address": machine_model.ip,
         "Description": machine_model.type,
@@ -93,13 +93,13 @@ def convert_to_drp(machine_model):
         "Runnable": True,
         "Workflow": machine_model.workflow
     }
-    logger.warning('Converted client to drp')
-    logger.warning(drp_object)
+    logger.info('Converted client to drp')
+    logger.info(drp_object)
     return drp_object
 
 
 def convert_to_client(drp_object):
-    logger.warning(drp_object)
+    logger.info(drp_object)
     mac = drp_object.get('HardwareAddrs')
     if mac is not None:
         mac = mac[0]
@@ -118,17 +118,17 @@ def convert_to_client(drp_object):
         'validated': drp_object.get('Validated'),
         'params': drp_object.get('Params')
     }
-    logger.warning('Converted drp to client')
+    logger.info('Converted drp to client')
     machine_model = MachineModel(**machine_model_dict)
-    logger.warning(machine_model)
+    logger.info(machine_model)
     return machine_model
 
 
 def get_all_machines(session):
-    logger.warning('get_all_machines')
+    logger.info('get_all_machines')
     try:
         result = session.get('machines')
-        logger.warning('Fetched all machines')
+        logger.info('Fetched all machines')
         return result
     except AuthorizationError as error:
         logger.error(error)

@@ -29,34 +29,34 @@ class ReservationTranslation(ApiHttp):
 
     def __init__(self, session):
         super(ReservationTranslation, self).__init__(session)
-        logger.warning('__init__')
+        logger.info('__init__')
 
     def get_reservation(self, reservation_ip):
-        logger.warning('get_reservation')
+        logger.info('get_reservation')
         drp_obj = self.session.get('reservations', reservation_ip)
         reservation_model = convert_to_client(drp_obj)
         return reservation_model
 
     def create_reservation(self, reservation_config_model):
-        logger.warning('create_reservation')
+        logger.info('create_reservation')
         drp_object = convert_to_drp(reservation_config_model)
         drp_object = self.session.post('reservations', drp_object)
         reservation_model = convert_to_client(drp_object)
-        logger.warning('Created ' + reservation_model.ip)
+        logger.info('Created ' + reservation_model.ip)
         return reservation_model
 
     def update_reservation(self, reservation_config_model, reservation_ip):
-        logger.warning('update_reservation')
+        logger.info('update_reservation')
         drp_object = convert_to_drp(reservation_config_model)
         drp_object = self.session.put('reservations', drp_object, reservation_ip)
         reservation_model = convert_to_client(drp_object)
-        logger.warning('Updated ' + reservation_ip)
+        logger.info('Updated ' + reservation_ip)
         return reservation_model
 
     def delete_reservation(self, reservation_ip):
-        logger.warning('delete_reservation')
+        logger.info('delete_reservation')
         result = self.session.delete('reservations', reservation_ip)
-        logger.warning('Deleted ' + reservation_ip)
+        logger.info('Deleted ' + reservation_ip)
         return
 
 
@@ -77,7 +77,7 @@ class ReservationTranslation(ApiHttp):
 #   "Token": "string",
 # }
 def convert_to_drp(reservation_model):
-    logger.warning('convert_to_drp')
+    logger.info('convert_to_drp')
     drp_object = {
         "Addr": reservation_model.ip,
         "Documentation": reservation_model.type,
@@ -86,13 +86,13 @@ def convert_to_drp(reservation_model):
         "Strategy": 'MAC',
         "Scoped": True
     }
-    logger.warning('Converted client to drp')
-    logger.warning(drp_object)
+    logger.info('Converted client to drp')
+    logger.info(drp_object)
     return drp_object
 
 
 def convert_to_client(drp_object):
-    logger.warning(drp_object)
+    logger.info(drp_object)
     reservation_model_dict = {
         'ip': drp_object.get('Addr'),
         'mac': drp_object.get('Token'),
@@ -105,17 +105,17 @@ def convert_to_client(drp_object):
         'read_only': drp_object.get('ReadOnly'),
         'validated': drp_object.get('Validated'),
     }
-    logger.warning('Converted drp to client')
+    logger.info('Converted drp to client')
     reservation_model = ReservationModel(**reservation_model_dict)
-    logger.warning(reservation_model)
+    logger.info(reservation_model)
     return reservation_model
 
 
 def get_all_reservations(session):
-    logger.warning('get_all_reservations')
+    logger.info('get_all_reservations')
     try:
         result = session.get('reservations')
-        logger.warning('Fetched all reservations')
+        logger.info('Fetched all reservations')
         return result
     except AuthorizationError as error:
         logger.error(error)
