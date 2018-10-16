@@ -54,7 +54,7 @@ class Machine:
     def update(self, updated_object):
         if self.__machine_model:
             self.__machine_model = self.__api.update_machine(
-                updated_object, self.__machine_model.name)
+                updated_object, self.__machine_model.uuid)
         else:
             self.__machine_model = self.__api.create_machine(
                 updated_object)
@@ -69,6 +69,11 @@ class Machine:
             return self.__api.get_machine(self.__machine_config.uuid)
         else:
             return self.__api.get_machine_by_name(self.__machine_config.name)
+
+    def add_param_values(self, param_config):
+        if self.__machine_model:
+            self.__machine_model = self.__api.add_machine_params(
+                param_config, self.__machine_model.uuid)
 
 
 def get_all(session):

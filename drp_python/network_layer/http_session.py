@@ -22,7 +22,6 @@ from drp_python.exceptions.http_exceptions import AuthorizationError, \
 from drp_python.exceptions.drb_exceptions import AlreadyExistsError, \
     NotFoundError
 
-
 urllib3.disable_warnings()
 logger = logging.getLogger('drp-python')
 
@@ -84,12 +83,17 @@ class HttpSession:
         logger.debug(body)
         r = requests.post(self.url + '/api/v3/' + actual_resource,
                           headers=headers, json=body, verify=False)
-        if r.status_code == 201:
+        if r.status_code == 201 or r.status_code == 200:
             return r.json()
         else:
             logger.error('Error on Post ' + str(r.status_code))
             temp = r.json()
-            raise AlreadyExistsError(body['Name'], str(temp['Messages'][0]))
+            if body.get('Name') is not None:
+                raise AlreadyExistsError(body['Name'],
+                                         str(temp['Messages'][0]))
+            else:
+                raise AlreadyExistsError(body['Addr'],
+                                         str(temp['Messages'][0]))
 
     def delete(self, resource, key):
         if not self.is_authorized():
