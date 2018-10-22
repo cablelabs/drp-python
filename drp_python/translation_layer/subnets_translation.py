@@ -73,11 +73,7 @@ def convert_to_drp(subnet_model):
         "Enabled": True,
         "Name": subnet_model.name,
         "OnlyReservations": True,
-        "Pickers": [
-            "hint",
-            "nextFree",
-            "mostExpired"
-        ],
+        "Pickers": subnet_model.pickers,
         "Strategy": "MAC",
         "Proxy": False,
         "ReservedLeaseTime": subnet_model.default_lease,

@@ -45,7 +45,7 @@ machine_object = {
 class MachineTest(unittest.TestCase):
 
     def setUp(self):
-        self.session = HttpSession('https://10.197.113.130:8092',
+        self.session = HttpSession('https://10.197.113.126:8092',
                                    login['username'],
                                    login['password'])
 
