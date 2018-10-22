@@ -30,4 +30,10 @@ class SubnetConfigModel(BaseModel):
         self.range = subnet_object.get('range')
         self.router = subnet_object.get('router')
         self.type = subnet_object.get('type')
+        self.unmanaged = subnet_object.get('unmanaged')
+        self.pickers = subnet_object.get('pickers')
         self.extension = subnet_object.get('extension', {})
+        if self.unmanaged is None:
+            self.unmanaged = False
+        if self.pickers is None:
+            self.pickers = ['hint', 'nextFree', 'mostExpired']

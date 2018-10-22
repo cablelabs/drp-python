@@ -103,7 +103,7 @@ class SubnetTranslationTest(unittest.TestCase):
                                           'Value': '10.197.111.1'},
                                          {'Code': 28,
                                           'Value': '10.197.111.255'}])
-        self.assertEqual(model.pickers, ['hint'])
+        self.assertEqual(model.pickers, ['hint', 'nextFree', 'mostExpired'])
         self.assertEqual(model.strategy, 'MAC')
 
         model = self.subnet_translation.get_subnet(
@@ -136,7 +136,7 @@ class SubnetTranslationTest(unittest.TestCase):
                                           'Value': '10.197.111.1'},
                                          {'Code': 28,
                                           'Value': '10.197.111.255'}])
-        self.assertEqual(model.pickers, ['hint'])
+        self.assertEqual(model.pickers, ['hint', 'nextFree', 'mostExpired'])
         self.assertEqual(model.strategy, 'MAC')
 
     def test_update_subnet(self):
@@ -171,7 +171,7 @@ class SubnetTranslationTest(unittest.TestCase):
             {'Code': 3, 'Value': '10.197.111.2'},
             {'Code': 28,
              'Value': '10.197.111.255'}])
-        self.assertEqual(model.pickers, ['hint'])
+        self.assertEqual(model.pickers, ['hint', 'nextFree', 'mostExpired'])
         self.assertEqual(model.strategy, 'MAC')
 
     def test_delete_subnet(self):

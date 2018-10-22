@@ -73,14 +73,12 @@ def convert_to_drp(subnet_model):
         "Enabled": True,
         "Name": subnet_model.name,
         "OnlyReservations": True,
-        "Pickers": [
-            "hint"
-        ],
+        "Pickers": subnet_model.pickers,
         "Strategy": "MAC",
         "Proxy": False,
         "ReservedLeaseTime": subnet_model.default_lease,
         "Subnet": address,
-        "Unmanaged": True,
+        "Unmanaged": False,
         "Options": [
             {
                 "Code": 6,
