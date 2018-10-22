@@ -41,4 +41,3 @@ class SubnetModel(BaseModel):
         self.pickers = subnet_object.get('pickers')
         self.strategy = subnet_object.get('strategy')
         self.unmanaged = subnet_object.get('unmanaged')
-
