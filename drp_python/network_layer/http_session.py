@@ -23,7 +23,7 @@ from drp_python.exceptions.drb_exceptions import AlreadyExistsError, \
     NotFoundError
 
 urllib3.disable_warnings()
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-session')
 
 
 class HttpSession:

@@ -21,7 +21,7 @@ from drp_python.translation_layer.reservations_translation import \
     get_all_reservations
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-reservation')
 
 
 class Reservation:

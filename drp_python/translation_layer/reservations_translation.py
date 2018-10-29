@@ -19,7 +19,7 @@ from drp_python.exceptions.drb_exceptions import NotFoundError
 from drp_python.model_layer.reservation_model import ReservationModel
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-res-trans')
 
 
 class ReservationTranslation(ApiHttp):

@@ -18,7 +18,7 @@ from drp_python.exceptions.http_exceptions import AuthorizationError, \
 from drp_python.model_layer.params_model import ParamsModel
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-params-trans')
 
 
 class ParamsTranslation(ApiHttp):

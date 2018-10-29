@@ -20,7 +20,7 @@ from drp_python.translation_layer.params_translation import \
     ParamsTranslation, get_all_params
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-params')
 
 
 class Params:

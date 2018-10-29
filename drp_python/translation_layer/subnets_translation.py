@@ -19,7 +19,7 @@ from drp_python.exceptions.http_exceptions import AuthorizationError, \
 from netaddr import IPAddress, IPNetwork
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-subnet-trans')
 
 
 class SubnetTranslation(ApiHttp):

@@ -19,7 +19,7 @@ from drp_python.exceptions.drb_exceptions import NotFoundError
 from drp_python.model_layer.machine_model import MachineModel
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-mach-trans')
 
 
 class MachineTranslation(ApiHttp):

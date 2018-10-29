@@ -19,7 +19,7 @@ from drp_python.translation_layer.subnets_translation import SubnetTranslation, 
     get_all_subnets
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-subnet')
 
 
 class Subnet:

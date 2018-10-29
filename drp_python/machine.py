@@ -21,7 +21,7 @@ from drp_python.translation_layer.machines_translation import \
     get_all_machines
 import logging
 
-logger = logging.getLogger('drp-python')
+logger = logging.getLogger('drp-machine')
 
 
 class Machine:
