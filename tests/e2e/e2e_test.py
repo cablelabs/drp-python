@@ -98,6 +98,24 @@ params_data = {
     }
 }
 
+params_access_key = {
+    "name": "access-keys",
+    "value": {
+        "root": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6NvYFzSKZr7RIMBYpgMbioVNS1mhM+yjIyZh9+a"
+                "/Czo82Kx8HOpYN19zcV67hU6aNDfwFK701f+SIfuKznl/7nzdM1c9SMsKNrWbyGAqFGBj3gHcetI7oCqHLAL+UF6ayT8WkjdX"
+                "/hYLO+hmQNdYYuu5xkdX7SzNw6eYUF9GdbL99aJ"
+                "+6HLppYtA2MrmRUGevx88rkxKFnY6VaWViCqTVvKXRmgQ20ArYlMC7yUiOiOYzeoh0TMxesUjZ"
+                "/RV25xXOt6RGAdK7LwrN00KQZcO9L82Rqu9WAEAmuJywD6RMLeIyJYLu9/twQQ+b5MNRg/JdEmmAmfsPtJ6cYs0zaU8z "
+                "ansible-generated on ci-build-server",
+        "ubuntu": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6NvYFzSKZr7RIMBYpgMbioVNS1mhM+yjIyZh9+a"
+                  "/Czo82Kx8HOpYN19zcV67hU6aNDfwFK701f+SIfuKznl/7nzdM1c9SMsKNrWbyGAqFGBj3gHcetI7oCqHLAL+UF6ayT8WkjdX"
+                  "/hYLO+hmQNdYYuu5xkdX7SzNw6eYUF9GdbL99aJ"
+                  "+6HLppYtA2MrmRUGevx88rkxKFnY6VaWViCqTVvKXRmgQ20ArYlMC7yUiOiOYzeoh0TMxesUjZ"
+                  "/RV25xXOt6RGAdK7LwrN00KQZcO9L82Rqu9WAEAmuJywD6RMLeIyJYLu9/twQQ+b5MNRg/JdEmmAmfsPtJ6cYs0zaU8z "
+                  "ansible-generated on ci-build-server "
+    }
+}
+
 
 class ReservationTest(unittest.TestCase):
 
@@ -126,6 +144,9 @@ class ReservationTest(unittest.TestCase):
         self.params_config_data = ParamsConfigModel(**params_data)
         self.params_data = Params(self.session, self.params_config_data)
 
+        self.params_config_access_key = ParamsConfigModel(**params_access_key)
+        self.params_access_key = Params(self.session, self.params_config_access_key)
+
     def tearDown(self):
         if self.reservation is not None:
             self.reservation.delete()
@@ -139,6 +160,8 @@ class ReservationTest(unittest.TestCase):
             self.params_tenant.delete()
         if self.params_data is not None:
             self.params_data.delete()
+        # Don't delete system param access_key
+
     """
     Tests for functions located in ReservationHttps
     1. Create it if it doesn't exist
@@ -242,6 +265,12 @@ class ReservationTest(unittest.TestCase):
 
         self.params_data.set_machine_param(self.machine)
 
+        if not self.params_access_key.is_valid():
+            self.params_access_key.create()
+        model = self.params_access_key.get()
+        self.assertEqual(model.name, self.params_config_access_key.name)
+        self.params_access_key.set_machine_param(self.machine)
+
         model = self.machine.get()
         self.assertEqual(
             model.params.get(self.params_config_mgmt.name),
@@ -252,6 +281,9 @@ class ReservationTest(unittest.TestCase):
         self.assertEqual(
             model.params.get(self.params_config_data.name),
             self.params_config_data.value)
+        self.assertEqual(
+            model.params.get(self.params_config_access_key.name),
+            self.params_config_access_key.value)
 
         self.assertIsNotNone(model.uuid)
         self.assertEqual(model.name, self.machine_config_model.name)

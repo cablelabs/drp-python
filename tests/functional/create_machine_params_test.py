@@ -42,13 +42,31 @@ machine_object = {
     'workflow': 'discovery'
 }
 
-params_object = {
+server_param = {
     'name': "mgmt",
     'value': "10.197.111.12",
     'description': 'Admin_Interface',
     'type': 'management',
     'schema': {
         'type': 'string'
+    }
+}
+
+access_key_param = {
+    "name": "access-keys",
+    "value": {
+        "root": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6NvYFzSKZr7RIMBYpgMbioVNS1mhM+yjIyZh9+a"
+                "/Czo82Kx8HOpYN19zcV67hU6aNDfwFK701f+SIfuKznl/7nzdM1c9SMsKNrWbyGAqFGBj3gHcetI7oCqHLAL+UF6ayT8WkjdX"
+                "/hYLO+hmQNdYYuu5xkdX7SzNw6eYUF9GdbL99aJ"
+                "+6HLppYtA2MrmRUGevx88rkxKFnY6VaWViCqTVvKXRmgQ20ArYlMC7yUiOiOYzeoh0TMxesUjZ"
+                "/RV25xXOt6RGAdK7LwrN00KQZcO9L82Rqu9WAEAmuJywD6RMLeIyJYLu9/twQQ+b5MNRg/JdEmmAmfsPtJ6cYs0zaU8z "
+                "ansible-generated on ci-build-server",
+        "ubuntu": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6NvYFzSKZr7RIMBYpgMbioVNS1mhM+yjIyZh9+a"
+                  "/Czo82Kx8HOpYN19zcV67hU6aNDfwFK701f+SIfuKznl/7nzdM1c9SMsKNrWbyGAqFGBj3gHcetI7oCqHLAL+UF6ayT8WkjdX"
+                  "/hYLO+hmQNdYYuu5xkdX7SzNw6eYUF9GdbL99aJ"
+                  "+6HLppYtA2MrmRUGevx88rkxKFnY6VaWViCqTVvKXRmgQ20ArYlMC7yUiOiOYzeoh0TMxesUjZ"
+                  "/RV25xXOt6RGAdK7LwrN00KQZcO9L82Rqu9WAEAmuJywD6RMLeIyJYLu9/twQQ+b5MNRg/JdEmmAmfsPtJ6cYs0zaU8z "
+                  "ansible-generated on ci-build-server "
     }
 }
 
@@ -62,14 +80,17 @@ class MachineParamTest(unittest.TestCase):
 
         self.machine_config_model = MachineConfigModel(**machine_object)
         self.machine = Machine(self.session, self.machine_config_model)
-        self.params_config_model = ParamsConfigModel(**params_object)
-        self.params = Params(self.session, self.params_config_model)
+        self.sr_params_config_model = ParamsConfigModel(**server_param)
+        self.sr_params = Params(self.session, self.sr_params_config_model)
+        self.ak_params_config_model = ParamsConfigModel(**access_key_param)
+        self.ak_params = Params(self.session, self.ak_params_config_model)
 
     def tearDown(self):
         if self.machine is not None:
             self.machine.delete()
-        if self.params is not None:
-            self.params.delete()
+        if self.sr_params is not None:
+            self.sr_params.delete()
+        # don't delete system params
 
     """
     Tests for functions located in MachineHttps
@@ -100,26 +121,35 @@ class MachineParamTest(unittest.TestCase):
         self.assertTrue(model.validated)
         self.assertFalse(model.read_only)
 
-        if not self.params.is_valid():
-            self.params.create()
-        model = self.params.get()
-        self.assertEqual(model.name, self.params_config_model.name)
+        if not self.sr_params.is_valid():
+            self.sr_params.create()
+        model = self.sr_params.get()
+        self.assertEqual(model.name, self.sr_params_config_model.name)
         self.assertEqual(model.value, None)
         self.assertEqual(model.description,
-                         self.params_config_model.description)
-        self.assertEqual(model.type, self.params_config_model.type)
-        self.assertEqual(model.schema, self.params_config_model.schema)
+                         self.sr_params_config_model.description)
+        self.assertEqual(model.type, self.sr_params_config_model.type)
+        self.assertEqual(model.schema, self.sr_params_config_model.schema)
         self.assertEquals(model.extension, {})
         self.assertTrue(model.available)
         self.assertEqual(model.errors, [])
         self.assertTrue(model.validated)
         self.assertFalse(model.read_only)
-
-        self.params.set_machine_param(self.machine)
+        self.sr_params.set_machine_param(self.machine)
 
         model = self.machine.get()
-        self.assertEqual(model.params.get(self.params_config_model.name),
-                         self.params_config_model.value)
+        self.assertEqual(model.params.get(self.sr_params_config_model.name),
+                         self.sr_params_config_model.value)
+
+        if not self.ak_params.is_valid():
+            self.ak_params.create()
+        model = self.ak_params.get()
+        self.assertEqual(model.name, self.ak_params_config_model.name)
+        self.ak_params.set_machine_param(self.machine)
+
+        model = self.machine.get()
+        self.assertEqual(model.params.get(self.ak_params_config_model.name),
+                         self.ak_params_config_model.value)
 
         self.assertIsNotNone(model.uuid)
         self.assertEqual(model.name, self.machine_config_model.name)
