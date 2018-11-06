@@ -51,7 +51,8 @@ class SubnetTranslationTest(unittest.TestCase):
             'netmask': '255.255.255.0',
             'range': '10.197.111.12 10.197.111.16',
             'router': '10.197.111.1',
-            'type': 'management'
+            'type': 'management',
+            'next_server': '10.191.111.131'
         }
         subnet_object2 = {
             'address': '10.197.111.0',
@@ -65,7 +66,8 @@ class SubnetTranslationTest(unittest.TestCase):
             'netmask': '255.255.255.0',
             'range': '10.197.111.12 10.197.111.26',
             'router': '10.197.111.2',
-            'type': 'management'
+            'type': 'management',
+            'next_server': '10.191.111.131'
         }
         self.subnet_config_model = SubnetConfigModel(**subnet_object)
         self.subnet_config_model2 = SubnetConfigModel(**subnet_object2)
@@ -89,6 +91,7 @@ class SubnetTranslationTest(unittest.TestCase):
         self.assertEqual(model.netmask, self.subnet_config_model.netmask)
         self.assertEqual(model.range, self.subnet_config_model.range)
         self.assertEqual(model.router, self.subnet_config_model.router)
+        self.assertEqual(model.next_server, self.subnet_config_model.next_server)
         self.assertEqual(model.type, self.subnet_config_model.type)
         self.assertEquals(model.extension, {})
         self.assertEqual(model.available, True)
@@ -122,6 +125,7 @@ class SubnetTranslationTest(unittest.TestCase):
         self.assertEqual(model.netmask, self.subnet_config_model.netmask)
         self.assertEqual(model.range, self.subnet_config_model.range)
         self.assertEqual(model.router, self.subnet_config_model.router)
+        self.assertEqual(model.next_server, self.subnet_config_model.next_server)
         self.assertEqual(model.type, self.subnet_config_model.type)
         self.assertEquals(model.extension, {})
         self.assertEqual(model.available, True)
@@ -156,6 +160,7 @@ class SubnetTranslationTest(unittest.TestCase):
         self.assertEqual(model.netmask, self.subnet_config_model2.netmask)
         self.assertEqual(model.range, self.subnet_config_model2.range)
         self.assertEqual(model.router, self.subnet_config_model2.router)
+        self.assertEqual(model.next_server, self.subnet_config_model2.next_server)
         self.assertEqual(model.type, self.subnet_config_model2.type)
         self.assertEquals(model.extension, {})
         self.assertEqual(model.available, True)

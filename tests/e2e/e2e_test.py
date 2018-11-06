@@ -65,6 +65,7 @@ subnet_object = {
     'netmask': '255.255.255.0',
     'range': '10.197.111.12 10.197.111.16',
     'router': '10.197.111.1',
+    'next_server': '10.197.111.131',
     'type': 'management'
 }
 
@@ -188,6 +189,7 @@ class ReservationTest(unittest.TestCase):
         self.assertEqual(model.netmask, self.subnet_config.netmask)
         self.assertEqual(model.range, self.subnet_config.range)
         self.assertEqual(model.router, self.subnet_config.router)
+        self.assertEqual(model.next_server, self.subnet_config.next_server)
         self.assertEqual(model.type, self.subnet_config.type)
         self.assertEquals(model.extension, {})
         self.assertTrue(model.available)
