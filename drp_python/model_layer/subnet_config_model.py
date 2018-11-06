@@ -32,6 +32,7 @@ class SubnetConfigModel(BaseModel):
         self.type = subnet_object.get('type')
         self.unmanaged = subnet_object.get('unmanaged')
         self.pickers = subnet_object.get('pickers')
+        self.next_server = subnet_object.get('next_server')
         self.extension = subnet_object.get('extension', {})
         if self.unmanaged is None:
             self.unmanaged = False

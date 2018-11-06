@@ -79,6 +79,7 @@ def convert_to_drp(subnet_model):
         "ReservedLeaseTime": subnet_model.default_lease,
         "Subnet": address,
         "Unmanaged": False,
+        "NextServer": subnet_model.next_server,
         "Options": [
             {
                 "Code": 6,
@@ -127,6 +128,7 @@ def convert_to_client(drp_object):
         'range': drp_object.get('ActiveStart') + ' ' + drp_object.get(
             'ActiveEnd'),
         'router': drp_object.get('Options')[3].get('Value'),
+        'next_server': drp_object.get('NextServer'),
         'type': drp_object.get('Description'),
 
         'available': drp_object.get('Available'),

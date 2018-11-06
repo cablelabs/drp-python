@@ -54,6 +54,7 @@ subnet_object = {
     'netmask': '255.255.255.0',
     'range': '10.197.111.12 10.197.111.16',
     'router': '10.197.111.1',
+    'next_server': '10.197.111.131',
     'type': 'management'
 }
 

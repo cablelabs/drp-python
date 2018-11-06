@@ -30,6 +30,7 @@ class SubnetModel(BaseModel):
         self.range = subnet_object.get('range')
         self.router = subnet_object.get('router')
         self.type = subnet_object.get('type')
+        self.next_server = subnet_object.get('next_server')
         self.extension = subnet_object.get('extension', {})
 
         # DRP State
