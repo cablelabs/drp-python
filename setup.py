@@ -16,13 +16,6 @@ from setuptools import setup
 
 
 setup(
-    license='Apache 2.0',
-    description='Python Module to Support Digital Rebar API',
-    long_description='Python bindings to Digital Rebar API.',
-    classifiers=[
-        'Topic :: System :: Installation/Setup'
-    ],
-    keywords='network boot, digital rebar, installation, NFV',
     setup_requires=['pbr>=2.0.0'],
     test_suite='tests',
     pbr=True,
